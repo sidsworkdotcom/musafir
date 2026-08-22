@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title>Admin · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <section class="page-head admin-head">
+    <div>
+      <p class="mono">CONTROL TOWER</p>
+      <h1>Packages</h1>
+    </div>
+    <div class="admin-actions">
+      <a class="btn-primary" href="/admin/packages/new">+ New package</a>
+      <form method="post" action="/admin/logout"><button class="btn-ghost" type="submit">Log out</button></form>
+    </div>
+  </section>
+
+  <section class="section">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Package</th><th>Category</th><th>Price</th><th>Days</th><th>Departures</th><th>Bookings</th><th>Status</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% packages.forEach(p => { %>
+          <tr class="<%= p.is_active ? '' : 'row-inactive' %>">
+            <td><strong><%= p.title %></strong><br><span class="muted mono"><%= p.destination %>, <%= p.state %></span></td>
+            <td><span class="mono"><%= p.category %></span></td>
+            <td>₹<%= Number(p.price).toLocaleString('en-IN') %></td>
+            <td><%= p.duration_days %></td>
+            <td><%= p.date_count %></td>
+            <td><%= p.booking_count %></td>
+            <td><span class="mono status-pill <%= p.is_active ? 'pill-live' : 'pill-off' %>"><%= p.is_active ? 'LIVE' : 'HIDDEN' %></span></td>
+            <td class="row-actions">
+              <a href="/admin/packages/<%= p.id %>/edit">Edit</a>
+              <form method="post" action="/admin/packages/<%= p.id %>/toggle">
+                <button type="submit"><%= p.is_active ? 'Hide' : 'Show' %></button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

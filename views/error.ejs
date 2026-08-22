@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title><%= code %> · Musafir</title>
+</head>
+<body>
+  <%- include('partials/header') %>
+  <section class="error-page">
+    <p class="mono error-code"><%= code %></p>
+    <h1>Off the map</h1>
+    <p><%= message %></p>
+    <a class="chip" href="/">← Back home</a>
+  </section>
+  <%- include('partials/footer') %>
+</body>
+</html>

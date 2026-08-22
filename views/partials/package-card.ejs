@@ -1,0 +1,21 @@
+<a class="pass" href="/packages/<%= p.slug %>">
+  <div class="pass-img" style="background-image:url('<%= p.image_url %>')">
+    <span class="pass-cat mono"><%= p.category %></span>
+    <% if (p.min_slots != null && p.min_slots <= 5) { %>
+      <span class="pass-scarce mono">ONLY <%= p.min_slots %> LEFT</span>
+    <% } %>
+  </div>
+  <div class="pass-body">
+    <p class="mono pass-route"><%= p.state.toUpperCase() %> · <%= p.duration_days %>D/<%= p.duration_days - 1 %>N</p>
+    <h3><%= p.title %></h3>
+    <% if (p.avg_rating) { %>
+      <p class="pass-rating">★ <%= p.avg_rating %> <span>(<%= p.review_count %> review<%= p.review_count == 1 ? '' : 's' %>)</span></p>
+    <% } else { %>
+      <p class="pass-rating pass-rating-none">New listing</p>
+    <% } %>
+  </div>
+  <div class="pass-stub">
+    <span class="mono stub-label">FARE / PERSON</span>
+    <span class="stub-price">₹<%= Number(p.price).toLocaleString('en-IN') %></span>
+  </div>
+</a>

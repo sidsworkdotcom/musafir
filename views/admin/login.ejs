@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title>Admin login · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <section class="admin-login">
+    <div class="admin-card">
+      <p class="mono">CREW ACCESS ONLY</p>
+      <h1>Admin login</h1>
+      <% if (error) { %><p class="form-error"><%= error %></p><% } %>
+      <form method="post" action="/admin/login">
+        <label>Username <input type="text" name="username" required autofocus></label>
+        <label>Password <input type="password" name="password" required></label>
+        <button type="submit">Sign in</button>
+      </form>
+    </div>
+  </section>
+  <%- include('../partials/footer') %>
+</body>
+</html>

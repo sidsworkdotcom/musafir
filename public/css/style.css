@@ -1,0 +1,314 @@
+/* ==========================================================================
+   MUSAFIR — design tokens
+   Palette: ink indigo (night train), marigold (garlands), monsoon teal
+   Type: Bricolage Grotesque (display) / Instrument Sans (body) / Spline Sans Mono (ticket labels)
+   Signature: boarding-pass package cards + dotted route lines
+   ========================================================================== */
+:root {
+  --ink: #161c36;
+  --ink-soft: #3a4160;
+  --paper: #f6f6f1;
+  --card: #ffffff;
+  --marigold: #f4a300;
+  --marigold-deep: #d98e00;
+  --teal: #12727d;
+  --line: #d9d9cf;
+  --danger: #c23b22;
+  --radius: 14px;
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-body: 'Instrument Sans', sans-serif;
+  --font-mono: 'Spline Sans Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; }
+a { color: inherit; }
+.mono { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; }
+.muted { color: var(--ink-soft); }
+
+/* ---------- Header ---------- */
+.site-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 5vw; border-bottom: 1px solid var(--line);
+  background: var(--paper); position: sticky; top: 0; z-index: 50;
+}
+.brand {
+  font-family: var(--font-display); font-weight: 800; font-size: 1.25rem;
+  text-decoration: none; letter-spacing: 0.04em;
+}
+.brand-mark { color: var(--marigold); }
+.site-header nav { display: flex; gap: 1.5rem; align-items: center; }
+.site-header nav a { text-decoration: none; font-weight: 500; font-size: 0.95rem; }
+.site-header nav a:hover { color: var(--teal); }
+.nav-admin {
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em;
+  border: 1px solid var(--ink); padding: 0.3rem 0.7rem; border-radius: 999px;
+}
+.nav-admin:hover { background: var(--ink); color: var(--paper) !important; }
+
+/* ---------- Hero ---------- */
+.hero { padding: 5rem 5vw 3.5rem; max-width: 900px; margin: 0 auto; text-align: center; }
+.eyebrow { color: var(--teal); margin-bottom: 1rem; }
+.hero h1 { font-size: clamp(2.8rem, 7vw, 5rem); font-weight: 800; }
+.hero h1 em { font-style: italic; color: var(--marigold-deep); }
+.hero-sub { max-width: 540px; margin: 1.25rem auto 2.5rem; color: var(--ink-soft); font-size: 1.05rem; }
+
+/* Ticket-shaped search bar */
+.ticket-search {
+  display: flex; background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); overflow: hidden; max-width: 680px; margin: 0 auto;
+  box-shadow: 0 8px 24px rgba(22, 28, 54, 0.08);
+}
+.ticket-search-field {
+  flex: 1; padding: 0.8rem 1.2rem; text-align: left;
+  border-right: 1px dashed var(--line); display: flex; flex-direction: column; gap: 0.15rem;
+}
+.ticket-search-field label { color: var(--ink-soft); }
+.ticket-search-field input {
+  border: none; outline: none; font-family: var(--font-body);
+  font-size: 1rem; background: transparent; color: var(--ink);
+}
+.ticket-search button {
+  border: none; background: var(--marigold); color: var(--ink);
+  font-family: var(--font-display); font-weight: 600; font-size: 1rem;
+  padding: 0 1.6rem; cursor: pointer; transition: background 0.15s;
+}
+.ticket-search button:hover { background: var(--marigold-deep); }
+
+/* Route line motif */
+.hero-route, .footer-route {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.6rem; margin-top: 2.5rem;
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+.route-line {
+  width: clamp(60px, 15vw, 160px); height: 0;
+  border-top: 2px dotted var(--teal); opacity: 0.6;
+}
+.plane { color: var(--teal); font-size: 1.1rem; }
+.route-label { color: var(--ink-soft); }
+
+/* ---------- Sections ---------- */
+.section { padding: 2.5rem 5vw; max-width: 1200px; margin: 0 auto; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.5rem; }
+.section h2 { font-size: 1.8rem; font-weight: 600; }
+.see-all { color: var(--teal); text-decoration: none; }
+.see-all:hover { text-decoration: underline; }
+
+.chip-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.chip {
+  padding: 0.5rem 1.1rem; border: 1px solid var(--ink); border-radius: 999px;
+  text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: all 0.15s;
+  display: inline-block;
+}
+.chip:hover { background: var(--ink); color: var(--paper); }
+
+/* ---------- Boarding-pass cards (the signature) ---------- */
+.card-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.75rem;
+}
+.pass {
+  display: flex; flex-direction: column; background: var(--card);
+  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+  text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; position: relative;
+}
+.pass:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(22, 28, 54, 0.12); }
+.pass-img {
+  height: 180px; background-size: cover; background-position: center;
+  position: relative; background-color: var(--ink-soft);
+}
+.pass-cat {
+  position: absolute; top: 12px; left: 12px; background: var(--ink); color: var(--paper);
+  padding: 0.25rem 0.6rem; border-radius: 4px;
+}
+.pass-scarce {
+  position: absolute; top: 12px; right: 12px; background: var(--danger); color: #fff;
+  padding: 0.25rem 0.6rem; border-radius: 4px;
+}
+.pass-body { padding: 1.1rem 1.25rem 0.9rem; flex: 1; }
+.pass-route { color: var(--teal); margin-bottom: 0.35rem; }
+.pass-body h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.4rem; }
+.pass-rating { font-size: 0.9rem; color: var(--marigold-deep); font-weight: 600; }
+.pass-rating span { color: var(--ink-soft); font-weight: 400; }
+.pass-rating-none { color: var(--ink-soft); font-weight: 400; font-style: italic; }
+
+/* Perforated stub with notches */
+.pass-stub {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.8rem 1.25rem; border-top: 2px dashed var(--line); position: relative;
+  background: #fbfbf7;
+}
+.pass-stub::before, .pass-stub::after {
+  content: ''; position: absolute; top: -9px; width: 16px; height: 16px;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 50%;
+}
+.pass-stub::before { left: -9px; }
+.pass-stub::after { right: -9px; }
+.stub-label { color: var(--ink-soft); }
+.stub-price { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; }
+
+/* ---------- Listing page ---------- */
+.page-head { padding: 3rem 5vw 0.5rem; max-width: 1200px; margin: 0 auto; }
+.page-head h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 1.25rem; }
+.filter-bar { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.filter-bar input, .filter-bar select {
+  padding: 0.6rem 0.9rem; border: 1px solid var(--line); border-radius: 8px;
+  font-family: var(--font-body); font-size: 0.92rem; background: var(--card); color: var(--ink);
+}
+.filter-bar input { flex: 1; min-width: 180px; }
+.filter-bar button {
+  padding: 0.6rem 1.4rem; background: var(--ink); color: var(--paper); border: none;
+  border-radius: 8px; font-family: var(--font-body); font-weight: 600; cursor: pointer;
+}
+.filter-bar button:hover { background: var(--ink-soft); }
+.result-count { color: var(--ink-soft); margin-bottom: 1.25rem; }
+.empty-state { text-align: center; padding: 4rem 1rem; color: var(--ink-soft); }
+.empty-state .mono { margin-bottom: 0.5rem; color: var(--teal); }
+
+/* ---------- Detail page ---------- */
+.detail-hero {
+  background-size: cover; background-position: center; color: var(--paper);
+  padding: 7rem 5vw 3rem; display: flex; align-items: flex-end; min-height: 380px;
+}
+.detail-hero-inner { max-width: 1200px; margin: 0 auto; width: 100%; }
+.detail-eyebrow { color: var(--marigold); margin-bottom: 0.5rem; }
+.detail-hero h1 { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800; }
+.detail-meta { margin-top: 0.75rem; opacity: 0.9; }
+
+.detail-layout {
+  display: grid; grid-template-columns: 1fr 320px; gap: 3rem;
+  max-width: 1200px; margin: 0 auto; padding: 3rem 5vw;
+}
+.detail-section { margin-bottom: 2.5rem; }
+.detail-section h2 { font-size: 1.6rem; font-weight: 600; margin-bottom: 1rem; }
+.detail-desc { font-size: 1.05rem; color: var(--ink-soft); max-width: 60ch; }
+
+.itinerary { list-style: none; }
+.itinerary li {
+  display: flex; gap: 1.25rem; padding: 1.1rem 0;
+  border-left: 2px dotted var(--teal); padding-left: 1.5rem; position: relative;
+}
+.itinerary li::before {
+  content: ''; position: absolute; left: -6px; top: 1.6rem;
+  width: 10px; height: 10px; border-radius: 50%; background: var(--marigold);
+}
+.it-day { color: var(--teal); white-space: nowrap; padding-top: 0.3rem; }
+.itinerary h3 { font-size: 1.05rem; font-weight: 600; }
+.itinerary p { color: var(--ink-soft); font-size: 0.95rem; }
+
+.review-list { display: flex; flex-direction: column; gap: 1rem; }
+.review { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.25rem; }
+.review-head { display: flex; justify-content: space-between; margin-bottom: 0.25rem; }
+.review-stars { color: var(--marigold-deep); font-weight: 600; }
+.review-note { margin-top: 1rem; }
+
+.booking-box {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1.5rem; height: fit-content; position: sticky; top: 90px;
+}
+.booking-label { color: var(--teal); margin-bottom: 1rem; }
+.date-list { list-style: none; margin-bottom: 1.25rem; }
+.date-list li {
+  display: flex; justify-content: space-between; padding: 0.6rem 0;
+  border-bottom: 1px dashed var(--line);
+}
+.date-list li.sold-out { opacity: 0.45; }
+.slots { color: var(--ink-soft); }
+.slots-low { color: var(--danger); font-weight: 500; }
+.book-btn {
+  width: 100%; padding: 0.9rem; background: var(--marigold); border: none;
+  border-radius: 10px; font-family: var(--font-display); font-weight: 600; font-size: 1.05rem;
+  cursor: pointer;
+}
+.book-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.booking-note { text-align: center; margin-top: 0.6rem; color: var(--ink-soft); }
+
+/* ---------- Admin ---------- */
+.admin-head { display: flex; justify-content: space-between; align-items: flex-end; }
+.admin-actions { display: flex; gap: 0.75rem; align-items: center; }
+.btn-primary {
+  background: var(--ink); color: var(--paper); padding: 0.65rem 1.3rem; border-radius: 8px;
+  text-decoration: none; font-weight: 600; border: none; font-size: 0.95rem; cursor: pointer;
+  font-family: var(--font-body); display: inline-block;
+}
+.btn-primary:hover { background: var(--ink-soft); }
+.btn-ghost {
+  background: transparent; border: 1px solid var(--line); padding: 0.65rem 1.3rem;
+  border-radius: 8px; cursor: pointer; font-family: var(--font-body); font-size: 0.95rem;
+  text-decoration: none; color: var(--ink); display: inline-block;
+}
+.btn-ghost:hover { border-color: var(--ink); }
+
+.admin-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
+.admin-table th {
+  font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-align: left;
+  padding: 0.8rem 1rem; background: var(--ink); color: var(--paper); text-transform: uppercase;
+}
+.admin-table td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 0.95rem; }
+.row-inactive { opacity: 0.5; }
+.status-pill { padding: 0.2rem 0.6rem; border-radius: 999px; }
+.pill-live { background: #e3f2ec; color: var(--teal); }
+.pill-off { background: #f0e6e3; color: var(--danger); }
+.row-actions { white-space: nowrap; }
+.row-actions a { margin-right: 0.6rem; color: var(--teal); }
+.row-actions form { display: inline; }
+.row-actions button { background: none; border: none; color: var(--danger); cursor: pointer; font-family: var(--font-body); font-size: 0.95rem; padding: 0; }
+.row-actions button:hover, .row-actions a:hover { text-decoration: underline; }
+
+.admin-login { display: grid; place-items: center; min-height: 60vh; padding: 2rem 5vw; }
+.admin-card {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 2.5rem; width: 100%; max-width: 380px;
+}
+.admin-card .mono { color: var(--teal); }
+.admin-card h1 { margin: 0.25rem 0 1.5rem; font-size: 1.8rem; }
+.admin-card label, .pkg-form label { display: flex; flex-direction: column; gap: 0.3rem; font-weight: 500; font-size: 0.92rem; margin-bottom: 1rem; }
+.admin-card input, .pkg-form input, .pkg-form select, .pkg-form textarea {
+  padding: 0.65rem 0.85rem; border: 1px solid var(--line); border-radius: 8px;
+  font-family: var(--font-body); font-size: 0.95rem; background: var(--paper); color: var(--ink);
+}
+.pkg-form textarea { font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.7; }
+.admin-card button { width: 100%; padding: 0.8rem; background: var(--marigold); border: none; border-radius: 8px; font-weight: 600; font-family: var(--font-display); font-size: 1rem; cursor: pointer; }
+.form-error { background: #fdeae5; color: var(--danger); padding: 0.7rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.92rem; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem; max-width: 820px; }
+.form-grid .span-2 { grid-column: span 2; }
+.form-actions { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+
+/* ---------- Error page ---------- */
+.error-page { text-align: center; padding: 6rem 5vw; }
+.error-code { color: var(--marigold-deep); font-size: 1rem; margin-bottom: 0.5rem; }
+.error-page h1 { font-size: 3rem; margin-bottom: 0.75rem; }
+.error-page p { color: var(--ink-soft); margin-bottom: 2rem; }
+
+/* ---------- Footer ---------- */
+.site-footer { text-align: center; padding: 3rem 5vw 2rem; border-top: 1px solid var(--line); margin-top: 3rem; color: var(--ink-soft); }
+.site-footer .footer-route { margin: 0 0 1.25rem; }
+.footer-small { font-size: 0.8rem; margin-top: 0.4rem; font-family: var(--font-mono); letter-spacing: 0.05em; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .detail-layout { grid-template-columns: 1fr; }
+  .booking-box { position: static; }
+}
+@media (max-width: 640px) {
+  .site-header { flex-direction: column; gap: 0.75rem; }
+  .ticket-search { flex-direction: column; }
+  .ticket-search-field { border-right: none; border-bottom: 1px dashed var(--line); }
+  .ticket-search button { padding: 0.9rem; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid .span-2 { grid-column: span 1; }
+  .admin-table { display: block; overflow-x: auto; }
+  .admin-head { flex-direction: column; align-items: flex-start; gap: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pass, .pass:hover { transition: none; transform: none; }
+}

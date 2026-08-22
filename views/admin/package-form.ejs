@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title><%= pkg ? 'Edit' : 'New' %> package · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <section class="page-head">
+    <p class="mono">CONTROL TOWER</p>
+    <h1><%= pkg ? 'Edit package' : 'New package' %></h1>
+  </section>
+
+  <section class="section">
+    <% if (error) { %><p class="form-error"><%= error %></p><% } %>
+    <form class="pkg-form" method="post" action="/admin/packages/save">
+      <% if (pkg && pkg.id) { %><input type="hidden" name="id" value="<%= pkg.id %>"><% } %>
+
+      <div class="form-grid">
+        <label class="span-2">Title
+          <input type="text" name="title" value="<%= pkg ? pkg.title : '' %>" required placeholder="Goa Sun & Sand Escape">
+        </label>
+        <label>Destination
+          <input type="text" name="destination" value="<%= pkg ? pkg.destination : '' %>" required placeholder="Goa">
+        </label>
+        <label>State
+          <input type="text" name="state" value="<%= pkg ? pkg.state : '' %>" required placeholder="Goa">
+        </label>
+        <label>Category
+          <select name="category" required>
+            <% ['BEACH','HILLS','HERITAGE','WILDLIFE','SPIRITUAL'].forEach(c => { %>
+              <option value="<%= c %>" <%= pkg && pkg.category === c ? 'selected' : '' %>><%= c %></option>
+            <% }) %>
+          </select>
+        </label>
+        <label>Price per person (₹)
+          <input type="number" name="price" value="<%= pkg ? pkg.price : '' %>" required min="0" step="1">
+        </label>
+        <label>Duration (days)
+          <input type="number" name="duration_days" value="<%= pkg ? pkg.duration_days : '' %>" required min="1" max="30">
+        </label>
+        <label>Image URL <span class="muted">(S3 upload comes in Phase 4)</span>
+          <input type="url" name="image_url" value="<%= pkg ? (pkg.image_url || '') : '' %>" placeholder="https://…">
+        </label>
+        <label>Latitude <span class="muted">(for weather)</span>
+          <input type="number" name="lat" value="<%= pkg ? (pkg.lat || '') : '' %>" step="0.00001" placeholder="15.49660">
+        </label>
+        <label>Longitude
+          <input type="number" name="lon" value="<%= pkg ? (pkg.lon || '') : '' %>" step="0.00001" placeholder="73.82780">
+        </label>
+        <label class="span-2">Description
+          <textarea name="description" rows="4" required><%= pkg ? pkg.description : '' %></textarea>
+        </label>
+        <label class="span-2">Itinerary — one line per day, format: <span class="mono">Title | Details</span>
+          <textarea name="itineraryText" rows="6" placeholder="Arrival & Baga Beach | Check in, afternoon at Baga&#10;Forts & North Goa | Aguada Fort, Chapora Fort"><%= itineraryText %></textarea>
+        </label>
+        <label class="span-2">Departure dates — one line each, format: <span class="mono">YYYY-MM-DD | total slots</span>
+          <textarea name="datesText" rows="4" placeholder="2026-09-10 | 20&#10;2026-09-24 | 20"><%= datesText %></textarea>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" type="submit">Save package</button>
+        <a class="btn-ghost" href="/admin">Cancel</a>
+      </div>
+    </form>
+  </section>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

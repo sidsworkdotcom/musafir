@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>All packages · Musafir</title>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <section class="page-head">
+    <h1>All packages</h1>
+    <form class="filter-bar" action="/packages" method="get">
+      <input type="text" name="q" placeholder="Search destination…" value="<%= filters.q %>">
+      <select name="category">
+        <option value="">All moods</option>
+        <% categories.forEach(c => { %>
+          <option value="<%= c %>" <%= filters.category === c ? 'selected' : '' %>><%= c.charAt(0) + c.slice(1).toLowerCase() %></option>
+        <% }) %>
+      </select>
+      <select name="maxPrice">
+        <option value="">Any budget</option>
+        <option value="10000" <%= filters.maxPrice === '10000' ? 'selected' : '' %>>Under ₹10,000</option>
+        <option value="13000" <%= filters.maxPrice === '13000' ? 'selected' : '' %>>Under ₹13,000</option>
+        <option value="16000" <%= filters.maxPrice === '16000' ? 'selected' : '' %>>Under ₹16,000</option>
+      </select>
+      <select name="maxDays">
+        <option value="">Any length</option>
+        <option value="3" <%= filters.maxDays === '3' ? 'selected' : '' %>>Up to 3 days</option>
+        <option value="4" <%= filters.maxDays === '4' ? 'selected' : '' %>>Up to 4 days</option>
+        <option value="5" <%= filters.maxDays === '5' ? 'selected' : '' %>>Up to 5 days</option>
+      </select>
+      <select name="sort">
+        <option value="">Newest first</option>
+        <option value="price_asc" <%= filters.sort === 'price_asc' ? 'selected' : '' %>>Price: low → high</option>
+        <option value="price_desc" <%= filters.sort === 'price_desc' ? 'selected' : '' %>>Price: high → low</option>
+        <option value="rating" <%= filters.sort === 'rating' ? 'selected' : '' %>>Top rated</option>
+      </select>
+      <button type="submit">Filter</button>
+    </form>
+  </section>
+
+  <section class="section">
+    <% if (packages.length === 0) { %>
+      <div class="empty-state">
+        <p class="mono">NO DEPARTURES FOUND</p>
+        <p>Nothing matches those filters. <a href="/packages">Clear filters</a> to see every trip.</p>
+      </div>
+    <% } else { %>
+      <p class="mono result-count"><%= packages.length %> TRIP<%= packages.length === 1 ? '' : 'S' %> AVAILABLE</p>
+      <div class="card-grid">
+        <% packages.forEach(p => { %>
+          <%- include('partials/package-card', { p }) %>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

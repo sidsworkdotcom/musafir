@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title><%= pkg.title %> · Musafir</title>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <section class="detail-hero" style="background-image:linear-gradient(180deg, rgba(20,25,45,.25), rgba(20,25,45,.75)), url('<%= pkg.image_url %>')">
+    <div class="detail-hero-inner">
+      <p class="mono detail-eyebrow"><%= pkg.category %> · <%= pkg.state.toUpperCase() %></p>
+      <h1><%= pkg.title %></h1>
+      <p class="mono detail-meta">
+        <%= pkg.duration_days %>D/<%= pkg.duration_days - 1 %>N · ₹<%= Number(pkg.price).toLocaleString('en-IN') %>/PERSON
+        <% if (stats.avg_rating) { %> · ★ <%= stats.avg_rating %> (<%= stats.review_count %>)<% } %>
+      </p>
+    </div>
+  </section>
+
+  <div class="detail-layout">
+    <main>
+      <section class="detail-section">
+        <h2>The trip</h2>
+        <p class="detail-desc"><%= pkg.description %></p>
+      </section>
+
+      <section class="detail-section">
+        <h2>Day by day</h2>
+        <ol class="itinerary">
+          <% itinerary.forEach(day => { %>
+            <li>
+              <span class="it-day mono">DAY <%= String(day.day_number).padStart(2, '0') %></span>
+              <div>
+                <h3><%= day.title %></h3>
+                <% if (day.details) { %><p><%= day.details %></p><% } %>
+              </div>
+            </li>
+          <% }) %>
+        </ol>
+      </section>
+
+      <section class="detail-section">
+        <h2>Traveller reviews</h2>
+        <% if (reviews.length === 0) { %>
+          <p class="muted">No reviews yet — be the first after your trip.</p>
+        <% } else { %>
+          <div class="review-list">
+            <% reviews.forEach(r => { %>
+              <article class="review">
+                <p class="review-head"><strong><%= r.user_name %></strong> <span class="review-stars">★ <%= r.rating %></span></p>
+                <% if (r.comment) { %><p><%= r.comment %></p><% } %>
+              </article>
+            <% }) %>
+          </div>
+        <% } %>
+        <p class="muted mono review-note">REVIEWS ARE FROM VERIFIED BOOKINGS ONLY</p>
+      </section>
+    </main>
+
+    <aside class="booking-box">
+      <p class="mono booking-label">UPCOMING DEPARTURES</p>
+      <% if (dates.length === 0) { %>
+        <p class="muted">No departures scheduled right now.</p>
+      <% } else { %>
+        <ul class="date-list">
+          <% dates.forEach(d => { %>
+            <li class="<%= d.slots_left === 0 ? 'sold-out' : '' %>">
+              <span class="mono"><%= new Date(d.start_date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></span>
+              <% if (d.slots_left === 0) { %>
+                <span class="slots mono">SOLD OUT</span>
+              <% } else if (d.slots_left <= 5) { %>
+                <span class="slots slots-low mono">ONLY <%= d.slots_left %> LEFT</span>
+              <% } else { %>
+                <span class="slots mono"><%= d.slots_left %> SLOTS</span>
+              <% } %>
+            </li>
+          <% }) %>
+        </ul>
+      <% } %>
+      <button class="book-btn" disabled title="Coming in Phase 3">Book now — ₹<%= Number(pkg.price).toLocaleString('en-IN') %></button>
+      <p class="mono booking-note">BOOKING OPENS IN PHASE 3 (COGNITO + RAZORPAY)</p>
+    </aside>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>Musafir · Trips across India, booked in minutes</title>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <section class="hero">
+    <p class="eyebrow mono">BOARDING SOON · INDIA</p>
+    <h1>Har safar,<br><em>sorted</em>.</h1>
+    <p class="hero-sub">Curated trips across beaches, hills, forts and ghats — with real departure dates, verified reviews, and instant booking.</p>
+
+    <form class="ticket-search" action="/packages" method="get">
+      <div class="ticket-search-field">
+        <label class="mono" for="q">DESTINATION</label>
+        <input id="q" type="text" name="q" placeholder="Goa, Manali, Jaipur…">
+      </div>
+      <div class="ticket-search-field">
+        <label class="mono" for="maxPrice">BUDGET (₹)</label>
+        <input id="maxPrice" type="number" name="maxPrice" placeholder="Any" min="0" step="500">
+      </div>
+      <button type="submit">Find trips →</button>
+    </form>
+
+    <div class="hero-route" aria-hidden="true">
+      <span class="mono route-label">YOU</span>
+      <span class="dot"></span><span class="route-line"></span><span class="plane">✈</span><span class="route-line"></span><span class="dot"></span>
+      <span class="mono route-label">ANYWHERE</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Latest departures</h2>
+      <a class="mono see-all" href="/packages">ALL PACKAGES →</a>
+    </div>
+    <div class="card-grid">
+      <% featured.forEach(p => { %>
+        <%- include('partials/package-card', { p }) %>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="section categories">
+    <h2>Travel by mood</h2>
+    <div class="chip-row">
+      <% categories.forEach(c => { %>
+        <a class="chip" href="/packages?category=<%= c %>"><%= c.charAt(0) + c.slice(1).toLowerCase() %></a>
+      <% }) %>
+    </div>
+  </section>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

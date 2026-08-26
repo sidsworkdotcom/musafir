@@ -69,33 +69,6 @@
     </div>
   </section>
 
-  <section class="offers" id="offers">
-    <div class="section-head">
-      <h2>Offers for you</h2>
-      <span class="mono muted">TAP A CODE TO COPY · APPLY AT CHECKOUT</span>
-    </div>
-    <div class="offer-rail">
-      <% coupons.forEach(c => { %>
-        <article class="offer">
-          <div class="offer-stub"><div><strong><%= c.discount_pct %>%</strong><small>OFF</small></div></div>
-          <div class="offer-body">
-            <h3><%= c.code === 'WELCOME10' ? 'New traveller welcome' : c.code === 'MONSOON20' ? 'Monsoon flash sale' : c.code === 'HILLS15' ? 'Hill station special' : 'Limited-time offer' %></h3>
-            <p><%= c.discount_pct %>% off<%= c.max_discount ? ', up to ₹' + Number(c.max_discount).toLocaleString('en-IN') : '' %><%= c.expires_at ? ' · till ' + new Date(c.expires_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) : '' %></p>
-            <span class="coupon-code" data-copy="<%= c.code %>"><%= c.code %> <button type="button" data-copy="<%= c.code %>">COPY</button></span>
-          </div>
-        </article>
-      <% }) %>
-      <article class="offer">
-        <div class="offer-stub"><div><strong>₹0</strong><small>FEES</small></div></div>
-        <div class="offer-body">
-          <h3>Free cancellation</h3>
-          <p>Change of plans? Cancel from My bookings any time before departure. Seats go straight back to the pool.</p>
-          <a class="see-all mono" href="/packages">NO CODE NEEDED →</a>
-        </div>
-      </article>
-    </div>
-  </section>
-
   <section class="section">
     <div class="section-head">
       <h2>Departing soon</h2>
@@ -124,7 +97,6 @@
     <div><span class="ico">✉</span><div><strong>Instant confirmation</strong><span>Booking reference and fare summary emailed the moment you pay.</span></div></div>
   </section>
 
-  <%- include('partials/offer-popup') %>
   <%- include('partials/footer') %>
 </body>
 </html>

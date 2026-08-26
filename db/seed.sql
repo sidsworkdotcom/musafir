@@ -61,7 +61,9 @@ INSERT INTO package_dates (package_id, start_date, total_slots, slots_left) VALU
 INSERT INTO coupons (code, discount_pct, max_discount, expires_at) VALUES
 ('WELCOME10', 10, 1500.00, DATE_ADD(CURDATE(), INTERVAL 365 DAY)),
 ('MONSOON20', 20, 2500.00, DATE_ADD(CURDATE(), INTERVAL 60 DAY)),
-('HILLS15',   15, 2000.00, DATE_ADD(CURDATE(), INTERVAL 120 DAY));
+('HILLS15',   15, 2000.00, DATE_ADD(CURDATE(), INTERVAL 120 DAY)),
+('NODETENTION2026',     25, 3000.00, DATE_ADD(CURDATE(), INTERVAL 365 DAY)),
+('DEKHO_MAAM_WE_TRIED', 30, 3500.00, DATE_ADD(CURDATE(), INTERVAL 365 DAY));
 
 -- A couple of seed reviews (from the demo user, pretend past bookings)
 INSERT INTO reviews (user_id, package_id, rating, comment) VALUES

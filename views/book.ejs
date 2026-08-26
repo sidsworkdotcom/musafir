@@ -33,15 +33,21 @@
           <label>Travellers
             <input type="number" name="travelers" value="1" min="1" max="10" required>
           </label>
-          <label><span>Coupon code <span class="hint">(optional)</span></span>
-            <input type="text" name="coupon" value="<%= prefill %>" placeholder="Enter or pick one below" style="text-transform:uppercase" autocomplete="off">
-          </label>
-          <p id="fare-hint" class="fare-hint"></p>
-          <div class="coupon-chips">
-            <% coupons.forEach(c => { %>
-              <button type="button" class="coupon-chip" data-code="<%= c.code %>"><%= c.code %><small><%= c.discount_pct %>% off</small></button>
-            <% }) %>
-          </div>
+          <details class="offers-box" <%= prefill ? 'open' : '' %>>
+            <summary><span class="mono">OFFERS</span> Have a coupon code?</summary>
+            <label><span>Coupon code</span>
+              <input type="text" name="coupon" value="<%= prefill %>" placeholder="Enter code" style="text-transform:uppercase" autocomplete="off">
+            </label>
+            <p id="fare-hint" class="fare-hint"></p>
+            <% if (coupons.length) { %>
+              <p class="mono muted" style="margin-bottom:.5rem">AVAILABLE NOW</p>
+              <div class="coupon-chips">
+                <% coupons.forEach(c => { %>
+                  <button type="button" class="coupon-chip" data-code="<%= c.code %>"><%= c.code %><small><%= c.discount_pct %>% off<%= c.max_discount ? ', max ₹' + Number(c.max_discount).toLocaleString('en-IN') : '' %></small></button>
+                <% }) %>
+              </div>
+            <% } %>
+          </details>
           <button id="book-submit" type="submit">Continue to payment →</button>
         </form>
       <% } %>

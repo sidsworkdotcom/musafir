@@ -18,9 +18,8 @@ router.get('/', async (req, res, next) => {
       ORDER BY p.created_at DESC
       LIMIT 6
     `);
-    const [coupons] = await pool.query('SELECT code, discount_pct, max_discount, expires_at FROM coupons WHERE is_active = TRUE AND (expires_at IS NULL OR expires_at >= CURDATE()) ORDER BY discount_pct DESC');
     const [[stats]] = await pool.query('SELECT (SELECT COUNT(*) FROM packages WHERE is_active = TRUE) AS trips, (SELECT COUNT(*) FROM bookings WHERE status IN ("CONFIRMED","COMPLETED")) AS travellers, (SELECT ROUND(AVG(rating),1) FROM reviews) AS rating');
-    res.render('home', { featured, categories: CATEGORIES, coupons, stats });
+    res.render('home', { featured, categories: CATEGORIES, stats });
   } catch (err) { next(err); }
 });
 
@@ -79,8 +78,7 @@ router.get('/packages/:slug', async (req, res, next) => {
       canReview = !!booked && !reviewed;
     }
 
-    const [coupons] = await pool.query('SELECT code, discount_pct, max_discount FROM coupons WHERE is_active = TRUE AND (expires_at IS NULL OR expires_at >= CURDATE()) ORDER BY discount_pct DESC LIMIT 1');
-    res.render('package-detail', { pkg, itinerary, dates, reviews, stats, canReview, bestCoupon: coupons[0] || null });
+    res.render('package-detail', { pkg, itinerary, dates, reviews, stats, canReview });
   } catch (err) { next(err); }
 });
 

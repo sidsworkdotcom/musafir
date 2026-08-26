@@ -96,10 +96,7 @@
           <% }) %>
         </ul>
       <% } %>
-      <% if (bestCoupon) { %>
-        <div class="box-offer">🏷 Use <span class="mono" data-copy="<%= bestCoupon.code %>"><%= bestCoupon.code %></span> for <%= bestCoupon.discount_pct %>% off<%= bestCoupon.max_discount ? ' (up to ₹' + Number(bestCoupon.max_discount).toLocaleString('en-IN') + ')' : '' %></div>
-      <% } %>
-      <a class="book-btn book-btn-link" href="/book/<%= pkg.slug %><%= bestCoupon ? '?coupon=' + bestCoupon.code : '' %>">Book now</a>
+      <a class="book-btn book-btn-link" href="/book/<%= pkg.slug %>">Book now</a>
       <p class="mono booking-note"><%= user ? 'PAY IN UNDER A MINUTE' : 'LOG IN TO BOOK · TAKES 30 SECONDS' %></p>
       <div class="trust-row">
         <span><b>🔒</b>Razorpay secure</span>

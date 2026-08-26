@@ -552,3 +552,13 @@ a { color: inherit; }
 .popup-top .stamp { top: 44px; right: 14px; }
 .offers .section-head { flex-wrap: wrap; gap: 0.4rem; }
 @media (max-width: 640px) { .offers .section-head .mono { display: none; } }
+
+/* ---------- Checkout offers section ---------- */
+.offers-box { border: 1px dashed var(--line); border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 1.1rem; background: #fbfbf7; }
+.offers-box summary { cursor: pointer; font-weight: 600; font-size: 0.95rem; list-style: none; display: flex; gap: 0.6rem; align-items: center; }
+.offers-box summary::-webkit-details-marker { display: none; }
+.offers-box summary .mono { background: var(--ink); color: var(--marigold); padding: 0.2rem 0.5rem; border-radius: 4px; }
+.offers-box summary::after { content: '+'; margin-left: auto; font-weight: 700; color: var(--ink-soft); }
+.offers-box[open] summary::after { content: '−'; }
+.offers-box[open] summary { margin-bottom: 0.9rem; }
+.offers-box .coupon-chips { margin: 0; }

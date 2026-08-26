@@ -25,6 +25,12 @@ async function migrate(conn) {
       applied++;
     }
   }
+  // Coupons added after the original seed (INSERT IGNORE = no duplicates on re-run).
+  await conn.query(`INSERT IGNORE INTO coupons (code, discount_pct, max_discount, expires_at) VALUES
+    ('HILLS15', 15, 2000.00, DATE_ADD(CURDATE(), INTERVAL 120 DAY)),
+    ('NODETENTION2026', 25, 3000.00, DATE_ADD(CURDATE(), INTERVAL 365 DAY)),
+    ('DEKHO_MAAM_WE_TRIED', 30, 3500.00, DATE_ADD(CURDATE(), INTERVAL 365 DAY))`);
+
   // Accounts created before email verification existed stay usable.
   const [r] = await conn.query('UPDATE users SET is_verified = TRUE WHERE password_hash IS NOT NULL AND verify_token IS NULL AND is_verified = FALSE');
   if (r.affectedRows) console.log(`  ~ marked ${r.affectedRows} pre-existing user(s) verified`);

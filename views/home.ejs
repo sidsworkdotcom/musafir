@@ -8,33 +8,98 @@
   <%- include('partials/header') %>
 
   <section class="hero">
-    <p class="eyebrow mono">BOARDING SOON · INDIA</p>
-    <h1>Har safar,<br><em>sorted</em>.</h1>
-    <p class="hero-sub">Curated trips across beaches, hills, forts and ghats — with real departure dates, verified reviews, and instant booking.</p>
+    <svg class="hero-map" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs><pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.2" cy="1.2" r="1.2" fill="#3a4160"/></pattern></defs>
+      <rect width="1200" height="420" fill="url(#dots)"/>
+      <path d="M80 340 C 300 120, 520 380, 760 160 S 1120 90, 1180 40" fill="none" stroke="#12727d" stroke-width="2" stroke-dasharray="4 8"/>
+      <g fill="#f4a300"><circle cx="80" cy="340" r="5"/><circle cx="410" cy="252" r="5"/><circle cx="760" cy="160" r="5"/><circle cx="1180" cy="40" r="5"/></g>
+      <text x="96" y="332" fill="#a9b0cc" font-family="monospace" font-size="11" letter-spacing="2">MUMBAI</text>
+      <text x="426" y="244" fill="#a9b0cc" font-family="monospace" font-size="11" letter-spacing="2">GOA</text>
+      <text x="776" y="152" fill="#a9b0cc" font-family="monospace" font-size="11" letter-spacing="2">JAIPUR</text>
+      <text x="1090" y="32" fill="#a9b0cc" font-family="monospace" font-size="11" letter-spacing="2">MANALI</text>
+    </svg>
+    <div class="hero-inner">
+      <p class="eyebrow mono">BOARDING SOON · <%= stats.trips %> TRIPS ACROSS INDIA</p>
+      <h1>Har safar,<br><em>sorted</em>.</h1>
+      <p class="hero-sub">Curated packages with real departure dates and live seat counts. Pick a date, pay, done — your booking reference lands in your inbox in seconds.</p>
 
-    <form class="ticket-search" action="/packages" method="get">
-      <div class="ticket-search-field">
-        <label class="mono" for="q">DESTINATION</label>
-        <input id="q" type="text" name="q" placeholder="Goa, Manali, Jaipur…">
+      <div class="search-card">
+        <div class="search-tabs" role="tablist">
+          <button class="search-tab" role="tab" type="button" aria-selected="true" data-cat=""><span class="ico">✦</span> All trips</button>
+          <button class="search-tab" role="tab" type="button" aria-selected="false" data-cat="BEACH"><span class="ico">🏖</span> Beach</button>
+          <button class="search-tab" role="tab" type="button" aria-selected="false" data-cat="HILLS"><span class="ico">⛰</span> Hills</button>
+          <button class="search-tab" role="tab" type="button" aria-selected="false" data-cat="HERITAGE"><span class="ico">🏰</span> Heritage</button>
+          <button class="search-tab" role="tab" type="button" aria-selected="false" data-cat="WILDLIFE"><span class="ico">🐅</span> Wildlife</button>
+          <button class="search-tab" role="tab" type="button" aria-selected="false" data-cat="SPIRITUAL"><span class="ico">🪔</span> Spiritual</button>
+        </div>
+        <form class="ticket-search" action="/packages" method="get">
+          <input type="hidden" name="category" id="search-category" value="">
+          <div class="ticket-search-field">
+            <label class="mono" for="q">WHERE TO</label>
+            <input id="q" type="text" name="q" placeholder="Goa, Manali, Jaipur…">
+          </div>
+          <div class="ticket-search-field">
+            <label class="mono" for="maxPrice">BUDGET / PERSON</label>
+            <select id="maxPrice" name="maxPrice">
+              <option value="">Any</option>
+              <option value="10000">Under ₹10,000</option>
+              <option value="13000">Under ₹13,000</option>
+              <option value="16000">Under ₹16,000</option>
+            </select>
+          </div>
+          <div class="ticket-search-field">
+            <label class="mono" for="maxDays">DURATION</label>
+            <select id="maxDays" name="maxDays">
+              <option value="">Any</option>
+              <option value="3">Up to 3 days</option>
+              <option value="4">Up to 4 days</option>
+              <option value="5">Up to 5 days</option>
+            </select>
+          </div>
+          <button type="submit">Find trips →</button>
+        </form>
       </div>
-      <div class="ticket-search-field">
-        <label class="mono" for="maxPrice">BUDGET (₹)</label>
-        <input id="maxPrice" type="number" name="maxPrice" placeholder="Any" min="0" step="500">
-      </div>
-      <button type="submit">Find trips →</button>
-    </form>
 
-    <div class="hero-route" aria-hidden="true">
-      <span class="mono route-label">YOU</span>
-      <span class="dot"></span><span class="route-line"></span><span class="plane">✈</span><span class="route-line"></span><span class="dot"></span>
-      <span class="mono route-label">ANYWHERE</span>
+      <div class="hero-stats">
+        <div class="hero-stat"><strong><%= stats.trips %></strong><span>curated trips</span></div>
+        <div class="hero-stat"><strong><%= categories.length %></strong><span>travel moods</span></div>
+        <div class="hero-stat"><strong>★ <%= stats.rating || '—' %></strong><span>from verified travellers</span></div>
+        <div class="hero-stat"><strong>0%</strong><span>cancellation fee</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="offers" id="offers">
+    <div class="section-head">
+      <h2>Offers for you</h2>
+      <span class="mono muted">TAP A CODE TO COPY · APPLY AT CHECKOUT</span>
+    </div>
+    <div class="offer-rail">
+      <% coupons.forEach(c => { %>
+        <article class="offer">
+          <div class="offer-stub"><div><strong><%= c.discount_pct %>%</strong><small>OFF</small></div></div>
+          <div class="offer-body">
+            <h3><%= c.code === 'WELCOME10' ? 'New traveller welcome' : c.code === 'MONSOON20' ? 'Monsoon flash sale' : c.code === 'HILLS15' ? 'Hill station special' : 'Limited-time offer' %></h3>
+            <p><%= c.discount_pct %>% off<%= c.max_discount ? ', up to ₹' + Number(c.max_discount).toLocaleString('en-IN') : '' %><%= c.expires_at ? ' · till ' + new Date(c.expires_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) : '' %></p>
+            <span class="coupon-code" data-copy="<%= c.code %>"><%= c.code %> <button type="button" data-copy="<%= c.code %>">COPY</button></span>
+          </div>
+        </article>
+      <% }) %>
+      <article class="offer">
+        <div class="offer-stub"><div><strong>₹0</strong><small>FEES</small></div></div>
+        <div class="offer-body">
+          <h3>Free cancellation</h3>
+          <p>Change of plans? Cancel from My bookings any time before departure. Seats go straight back to the pool.</p>
+          <a class="see-all mono" href="/packages">NO CODE NEEDED →</a>
+        </div>
+      </article>
     </div>
   </section>
 
   <section class="section">
     <div class="section-head">
-      <h2>Latest departures</h2>
-      <a class="mono see-all" href="/packages">ALL PACKAGES →</a>
+      <h2>Departing soon</h2>
+      <a class="mono see-all" href="/packages">ALL TRIPS →</a>
     </div>
     <div class="card-grid">
       <% featured.forEach(p => { %>
@@ -52,6 +117,14 @@
     </div>
   </section>
 
+  <section class="why">
+    <div><span class="ico">📅</span><div><strong>Real departure dates</strong><span>Every trip shows live seat counts — no "enquire now" forms.</span></div></div>
+    <div><span class="ico">🔒</span><div><strong>Secure payment</strong><span>Razorpay checkout, verified server-side. Cards, UPI, netbanking.</span></div></div>
+    <div><span class="ico">★</span><div><strong>Verified reviews only</strong><span>Only travellers with a confirmed booking can rate a trip.</span></div></div>
+    <div><span class="ico">✉</span><div><strong>Instant confirmation</strong><span>Booking reference and fare summary emailed the moment you pay.</span></div></div>
+  </section>
+
+  <%- include('partials/offer-popup') %>
   <%- include('partials/footer') %>
 </body>
 </html>

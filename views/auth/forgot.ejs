@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title>Reset password · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <section class="auth-wrap">
+    <%- include('_side') %>
+    <div class="auth-main">
+      <p class="mono">PASSWORD RESET</p>
+      <h1>Forgot your password?</h1>
+      <p class="muted" style="margin:-0.75rem 0 1.25rem;font-size:.92rem">Enter your email and we'll send a reset link that works for 1 hour.</p>
+      <% if (error) { %><p class="form-error"><%= error %></p><% } %>
+      <form method="post" action="/forgot">
+        <label>Email <input type="email" name="email" required autofocus autocomplete="email"></label>
+        <button type="submit">Send reset link →</button>
+      </form>
+      <p class="auth-switch">Remembered it? <a href="/login">Log in</a></p>
+    </div>
+  </section>
+  <%- include('../partials/footer') %>
+</body>
+</html>

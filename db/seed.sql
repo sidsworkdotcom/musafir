@@ -1,8 +1,9 @@
 -- Musafir Tourism: seed data (6 packages across categories, dates, itineraries, coupons)
+-- Departure dates are relative to CURDATE() so the demo never shows an empty calendar.
 
-INSERT INTO users (name, email, role) VALUES
-('Demo Admin', 'admin@musafir.local', 'ADMIN'),
-('Aarav Traveller', 'aarav@example.com', 'USER');
+INSERT INTO users (name, email, role, password_hash, is_verified) VALUES
+('Demo Admin', 'admin@musafir.local', 'ADMIN', NULL, TRUE),
+('Aarav Traveller', 'aarav@example.com', 'USER', '$2b$10$JmZ3fQTkfR5wnas5bKJaA.xLgRBxx2gzhzy6Bh5LMeqJYxT0W8gOe', TRUE); -- password: demo1234
 
 INSERT INTO packages (title, slug, destination, state, category, description, price, duration_days, image_url, lat, lon) VALUES
 ('Goa Sun & Sand Escape', 'goa-sun-sand', 'Goa', 'Goa', 'BEACH',
@@ -50,16 +51,17 @@ INSERT INTO package_itinerary (package_id, day_number, title, details) VALUES
 
 -- Departure dates over the next months (slots vary so "Only X left!" shows naturally)
 INSERT INTO package_dates (package_id, start_date, total_slots, slots_left) VALUES
-(1,'2026-09-10',20,20),(1,'2026-09-24',20,3),(1,'2026-10-08',20,14),
-(2,'2026-09-12',15,15),(2,'2026-09-26',15,2),(2,'2026-10-10',15,9),
-(3,'2026-09-05',25,25),(3,'2026-09-19',25,11),(3,'2026-10-03',25,25),
-(4,'2026-09-13',12,5),(4,'2026-09-27',12,12),
-(5,'2026-09-06',18,18),(5,'2026-09-20',18,7),
-(6,'2026-09-11',16,16),(6,'2026-09-25',16,1),(6,'2026-10-09',16,16);
+(1,DATE_ADD(CURDATE(), INTERVAL 19 DAY),20,20),(1,DATE_ADD(CURDATE(), INTERVAL 33 DAY),20,3),(1,DATE_ADD(CURDATE(), INTERVAL 47 DAY),20,14),
+(2,DATE_ADD(CURDATE(), INTERVAL 21 DAY),15,15),(2,DATE_ADD(CURDATE(), INTERVAL 35 DAY),15,2),(2,DATE_ADD(CURDATE(), INTERVAL 49 DAY),15,9),
+(3,DATE_ADD(CURDATE(), INTERVAL 14 DAY),25,25),(3,DATE_ADD(CURDATE(), INTERVAL 28 DAY),25,11),(3,DATE_ADD(CURDATE(), INTERVAL 42 DAY),25,25),
+(4,DATE_ADD(CURDATE(), INTERVAL 22 DAY),12,5),(4,DATE_ADD(CURDATE(), INTERVAL 36 DAY),12,12),
+(5,DATE_ADD(CURDATE(), INTERVAL 15 DAY),18,18),(5,DATE_ADD(CURDATE(), INTERVAL 29 DAY),18,7),
+(6,DATE_ADD(CURDATE(), INTERVAL 20 DAY),16,16),(6,DATE_ADD(CURDATE(), INTERVAL 34 DAY),16,1),(6,DATE_ADD(CURDATE(), INTERVAL 48 DAY),16,16);
 
 INSERT INTO coupons (code, discount_pct, max_discount, expires_at) VALUES
-('WELCOME10', 10, 1500.00, '2026-12-31'),
-('MONSOON20', 20, 2500.00, '2026-09-30');
+('WELCOME10', 10, 1500.00, DATE_ADD(CURDATE(), INTERVAL 365 DAY)),
+('MONSOON20', 20, 2500.00, DATE_ADD(CURDATE(), INTERVAL 60 DAY)),
+('HILLS15',   15, 2000.00, DATE_ADD(CURDATE(), INTERVAL 120 DAY));
 
 -- A couple of seed reviews (from the demo user, pretend past bookings)
 INSERT INTO reviews (user_id, package_id, rating, comment) VALUES

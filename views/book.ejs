@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>Book · <%= pkg.title %> · Musafir</title>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <% const fmt = d => new Date(d).toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }); %>
+  <div class="book-layout">
+    <div class="admin-card book-card">
+      <p class="mono">BOOKING · STEP 1 OF 2</p>
+      <h1><%= pkg.title %></h1>
+      <p class="muted book-sub"><%= pkg.destination %>, <%= pkg.state %> · <%= pkg.duration_days %>D/<%= pkg.duration_days - 1 %>N</p>
+      <% if (error) { %><p class="form-error"><%= error %></p><% } %>
+
+      <% if (dates.length === 0) { %>
+        <p class="muted">No departures with open seats right now. <a href="/packages/<%= pkg.slug %>">Back to trip</a></p>
+      <% } else { %>
+        <form id="book-form" method="post" action="/book/<%= pkg.slug %>/checkout"
+              data-price="<%= Number(pkg.price) %>"
+              data-coupons='<%- JSON.stringify(coupons.map(c => ({ code: c.code, pct: c.discount_pct, cap: c.max_discount == null ? null : Number(c.max_discount) }))) %>'>
+          <label>Departure date
+            <select name="date_id" required>
+              <% dates.forEach(d => { %>
+                <option value="<%= d.id %>" data-label="<%= fmt(d.start_date) %>">
+                  <%= fmt(d.start_date) %> — <%= d.slots_left %> seat<%= d.slots_left === 1 ? '' : 's' %> left
+                </option>
+              <% }) %>
+            </select>
+          </label>
+          <label>Travellers
+            <input type="number" name="travelers" value="1" min="1" max="10" required>
+          </label>
+          <label><span>Coupon code <span class="hint">(optional)</span></span>
+            <input type="text" name="coupon" value="<%= prefill %>" placeholder="Enter or pick one below" style="text-transform:uppercase" autocomplete="off">
+          </label>
+          <p id="fare-hint" class="fare-hint"></p>
+          <div class="coupon-chips">
+            <% coupons.forEach(c => { %>
+              <button type="button" class="coupon-chip" data-code="<%= c.code %>"><%= c.code %><small><%= c.discount_pct %>% off</small></button>
+            <% }) %>
+          </div>
+          <button id="book-submit" type="submit">Continue to payment →</button>
+        </form>
+      <% } %>
+    </div>
+
+    <aside class="admin-card book-summary">
+      <p class="mono">FARE SUMMARY</p>
+      <ul class="fare-lines">
+        <li><span>Departure</span><span class="mono" id="f-date"><%= dates.length ? fmt(dates[0].start_date) : '—' %></span></li>
+        <li><span>Travellers</span><span class="mono" id="f-trav">1 × ₹<%= Number(pkg.price).toLocaleString('en-IN') %></span></li>
+        <li><span>Subtotal</span><span class="mono" id="f-sub">₹<%= Number(pkg.price).toLocaleString('en-IN') %></span></li>
+        <li class="fare-discount" id="f-disc-row" style="display:none"><span id="f-disc-label">Coupon</span><span class="mono" id="f-disc"></span></li>
+        <li class="fare-total"><span>To pay</span><span class="mono" id="f-total">₹<%= Number(pkg.price).toLocaleString('en-IN') %></span></li>
+      </ul>
+      <p class="mono booking-note">FREE CANCELLATION · SEATS HELD ON PAYMENT</p>
+    </aside>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

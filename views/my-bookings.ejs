@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>My bookings · Musafir</title>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <section class="page-head">
+    <p class="mono">TRAVELLER · <%= user.name.toUpperCase() %></p>
+    <h1>My bookings</h1>
+    <% if (confirmedRef) { %>
+      <p class="confirm-banner">✓ Booking <span class="mono"><%= confirmedRef %></span> confirmed. Your e-ticket is on its way to <%= user.email %>.</p>
+    <% } %>
+  </section>
+
+  <section class="section">
+    <% if (bookings.length === 0) { %>
+      <div class="empty-state">
+        <p class="mono">NO TRIPS YET</p>
+        <p>Your journeys will appear here. <a href="/packages">Browse packages</a> to book your first one.</p>
+      </div>
+    <% } else { %>
+      <div class="booking-list">
+        <% bookings.forEach(b => { %>
+          <article class="booking-row">
+            <div class="booking-img" style="background-image:url('<%= b.image_url %>')"></div>
+            <div class="booking-info">
+              <p class="mono booking-ref"><%= b.booking_ref %> · <span class="status-pill pill-<%= b.status.toLowerCase() %>"><%= b.status %></span></p>
+              <h3><a href="/packages/<%= b.slug %>"><%= b.title %></a></h3>
+              <p class="muted">
+                <%= new Date(b.start_date).toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }) %>
+                · <%= b.travelers %> traveller<%= b.travelers === 1 ? '' : 's' %>
+                · ₹<%= Number(b.amount).toLocaleString('en-IN') %>
+                <% if (b.coupon_code) { %> · coupon <span class="mono"><%= b.coupon_code %></span><% } %>
+              </p>
+            </div>
+            <div class="booking-actions">
+              <% if (b.status === 'CONFIRMED' || b.status === 'PENDING') { %>
+                <form method="post" action="/bookings/<%= b.id %>/cancel" onsubmit="return confirm('Cancel booking <%= b.booking_ref %>?')">
+                  <button class="btn-ghost btn-small" type="submit">Cancel</button>
+                </form>
+              <% } %>
+              <% if ((b.status === 'CONFIRMED' || b.status === 'COMPLETED') && !b.has_review) { %>
+                <a class="btn-ghost btn-small" href="/packages/<%= b.slug %>#reviews">Rate trip</a>
+              <% } %>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

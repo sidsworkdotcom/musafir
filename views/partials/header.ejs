@@ -1,12 +1,25 @@
 <header class="site-header">
   <a href="/" class="brand">
-    <span class="brand-mark">✦</span> MUSAFIR
+    <span class="brand-mark">✦</span> MUSAFIR <span class="brand-tag">HAR SAFAR, SORTED.</span>
   </a>
   <nav>
-    <a href="/packages">Packages</a>
+    <a href="/packages">Trips</a>
     <a href="/packages?category=BEACH">Beaches</a>
     <a href="/packages?category=HILLS">Hills</a>
-    <a href="/packages?category=HERITAGE">Heritage</a>
-    <a href="/admin" class="nav-admin">Admin</a>
+    <a href="/#offers" class="nav-offer">Offers</a>
+    <% if (typeof user !== 'undefined' && user) { %>
+      <a href="/my-bookings">My bookings</a>
+      <span class="nav-user">
+        <span class="avatar" aria-hidden="true"><%= user.name.trim().charAt(0).toUpperCase() %></span>
+        <span class="name"><%= user.name.split(' ')[0] %></span>
+        <form method="post" action="/logout" class="nav-logout"><button type="submit">Log out</button></form>
+      </span>
+    <% } else { %>
+      <a href="/login">Log in</a>
+      <a href="/signup" class="nav-admin nav-cta">Sign up</a>
+    <% } %>
   </nav>
 </header>
+<% if (typeof flash !== 'undefined' && flash) { %>
+  <div class="flash"><p class="flash-<%= flash.type %>"><span><%= flash.text %></span><button type="button" data-dismiss aria-label="Dismiss">×</button></p></div>
+<% } %>

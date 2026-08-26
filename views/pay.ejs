@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>Payment · Musafir</title>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <section class="admin-login">
+    <div class="admin-card book-card">
+      <p class="mono">STEP 2 OF 2 · REF <%= bookingRef %></p>
+      <h1><%= pkg.title %></h1>
+      <ul class="fare-lines">
+        <li><span>Departure</span><span class="mono"><%= new Date(slot.start_date).toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }) %></span></li>
+        <li><span>Travellers</span><span class="mono"><%= travelers %> × ₹<%= Number(pkg.price).toLocaleString('en-IN') %></span></li>
+        <li><span>Subtotal</span><span class="mono">₹<%= base.toLocaleString('en-IN') %></span></li>
+        <% if (discount > 0) { %>
+          <li class="fare-discount"><span>Coupon <%= couponCode %></span><span class="mono">− ₹<%= discount.toLocaleString('en-IN') %></span></li>
+        <% } %>
+        <li class="fare-total"><span>To pay</span><span class="mono">₹<%= amount.toLocaleString('en-IN') %></span></li>
+      </ul>
+
+      <% if (rzpEnabled) { %>
+        <button id="rzp-btn" class="book-btn">Pay ₹<%= amount.toLocaleString('en-IN') %> with Razorpay</button>
+        <form id="verify-form" method="post" action="/book/verify" style="display:none">
+          <input type="hidden" name="bookingId" value="<%= bookingId %>">
+          <input type="hidden" name="razorpay_order_id" value="">
+          <input type="hidden" name="razorpay_payment_id" value="">
+          <input type="hidden" name="razorpay_signature" value="">
+        </form>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script>
+          document.getElementById('rzp-btn').onclick = function () {
+            var rzp = new Razorpay({
+              key: '<%= rzpKeyId %>',
+              amount: <%= amount * 100 %>,
+              currency: 'INR',
+              name: 'Musafir',
+              description: '<%= bookingRef %>',
+              order_id: '<%= rzpOrderId %>',
+              prefill: { name: '<%= user.name %>', email: '<%= user.email %>' },
+              theme: { color: '#f4a300' },
+              handler: function (resp) {
+                var f = document.getElementById('verify-form');
+                f.razorpay_order_id.value = resp.razorpay_order_id;
+                f.razorpay_payment_id.value = resp.razorpay_payment_id;
+                f.razorpay_signature.value = resp.razorpay_signature;
+                f.submit();
+              }
+            });
+            rzp.open();
+          };
+        </script>
+      <% } else { %>
+        <form method="post" action="/book/simulate-pay">
+          <input type="hidden" name="bookingId" value="<%= bookingId %>">
+          <button type="submit" class="book-btn">Simulate successful payment</button>
+        </form>
+        <p class="mono booking-note">TEST MODE — ADD RAZORPAY KEYS IN .env FOR REAL CHECKOUT</p>
+      <% } %>
+      <p class="booking-note muted" style="font-size:.85rem">Confirmation and e-ticket go to <strong><%= user.email %></strong></p>
+    </div>
+  </section>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

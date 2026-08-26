@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title><%= title %> · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <section class="check-mail">
+    <div class="big"><%= ok ? '✓' : '⚠' %></div>
+    <h1><%= title %></h1>
+    <p><%= message %></p>
+    <% if (resendEmail) { %>
+      <form method="post" action="/resend-verification">
+        <input type="email" name="email" value="<%= resendEmail %>" required aria-label="Email">
+        <button class="btn-ghost" type="submit">Send a new link</button>
+      </form>
+    <% } else if (forgot) { %>
+      <form method="post" action="/forgot">
+        <input type="email" name="email" placeholder="you@example.com" required aria-label="Email">
+        <button class="btn-ghost" type="submit">Send reset link</button>
+      </form>
+    <% } else { %>
+      <p style="margin-top:1.5rem"><a class="btn-primary" href="/login">Go to log in</a></p>
+    <% } %>
+  </section>
+  <%- include('../partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title>Check your email · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <section class="check-mail">
+    <div class="big">✉</div>
+    <p class="mono" style="color:var(--teal)"><%= mode === 'verify' ? 'ONE MORE STEP' : 'RESET LINK SENT' %></p>
+    <h1>Check your inbox</h1>
+    <% if (mode === 'verify') { %>
+      <p>We sent a confirmation link to <strong><%= email %></strong>. Click it to activate your account — it works for 24 hours.</p>
+    <% } else { %>
+      <p>If an account exists for <strong><%= email %></strong>, a password reset link is on its way. It works for 1 hour.</p>
+    <% } %>
+    <p class="muted" style="font-size:.85rem;margin-top:.75rem">Nothing there? Check spam, or resend below.</p>
+    <% if (mode === 'verify') { %>
+      <form method="post" action="/resend-verification">
+        <input type="email" name="email" value="<%= email %>" required aria-label="Email">
+        <button class="btn-ghost" type="submit">Resend link</button>
+      </form>
+    <% } else { %>
+      <form method="post" action="/forgot">
+        <input type="email" name="email" value="<%= email %>" required aria-label="Email">
+        <button class="btn-ghost" type="submit">Resend link</button>
+      </form>
+    <% } %>
+    <% if (devMail) { %>
+      <p class="devnote"><strong>Dev mode:</strong> SMTP isn't configured, so the email wasn't sent. The link is printed in the server console — open it from there.</p>
+    <% } %>
+  </section>
+  <%- include('../partials/footer') %>
+</body>
+</html>

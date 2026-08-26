@@ -1,0 +1,22 @@
+<div id="offer-popup" class="popup-backdrop" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+  <div class="popup">
+    <button class="popup-close" type="button" data-close aria-label="Close">×</button>
+    <div class="popup-top">
+      <span class="stamp">FIRST TRIP</span>
+      <p class="mono">WELCOME OFFER</p>
+      <h2 id="popup-title">10% off your <em>first safar</em>.</h2>
+    </div>
+    <div class="popup-body">
+      <p>Up to ₹1,500 off any package. Apply it at checkout — no minimum spend.</p>
+      <div class="popup-code"><span>WELCOME10</span><button type="button" data-copy="WELCOME10">COPY</button></div>
+      <div class="popup-actions">
+        <% if (typeof user !== 'undefined' && user) { %>
+          <a class="popup-primary" href="/packages" data-close>Browse trips</a>
+        <% } else { %>
+          <a class="popup-primary" href="/signup">Sign up to claim</a>
+          <a class="popup-ghost" href="/packages" data-close>Just browse</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>

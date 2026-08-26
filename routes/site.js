@@ -8,15 +8,19 @@ const CATEGORIES = ['BEACH', 'HILLS', 'HERITAGE', 'WILDLIFE', 'SPIRITUAL'];
 router.get('/', async (req, res, next) => {
   try {
     const [featured] = await pool.query(`
-      SELECT p.*, ROUND(AVG(r.rating),1) AS avg_rating, COUNT(r.id) AS review_count
+      SELECT p.*, ROUND(AVG(r.rating),1) AS avg_rating, COUNT(DISTINCT r.id) AS review_count,
+             MIN(d.slots_left) AS min_slots, MIN(d.start_date) AS next_date
       FROM packages p
       LEFT JOIN reviews r ON r.package_id = p.id
+      LEFT JOIN package_dates d ON d.package_id = p.id AND d.start_date >= CURDATE() AND d.slots_left > 0
       WHERE p.is_active = TRUE
       GROUP BY p.id
       ORDER BY p.created_at DESC
-      LIMIT 3
+      LIMIT 6
     `);
-    res.render('home', { featured, categories: CATEGORIES });
+    const [coupons] = await pool.query('SELECT code, discount_pct, max_discount, expires_at FROM coupons WHERE is_active = TRUE AND (expires_at IS NULL OR expires_at >= CURDATE()) ORDER BY discount_pct DESC');
+    const [[stats]] = await pool.query('SELECT (SELECT COUNT(*) FROM packages WHERE is_active = TRUE) AS trips, (SELECT COUNT(*) FROM bookings WHERE status IN ("CONFIRMED","COMPLETED")) AS travellers, (SELECT ROUND(AVG(rating),1) FROM reviews) AS rating');
+    res.render('home', { featured, categories: CATEGORIES, coupons, stats });
   } catch (err) { next(err); }
 });
 
@@ -36,7 +40,7 @@ router.get('/packages', async (req, res, next) => {
 
     const [packages] = await pool.query(`
       SELECT p.*, ROUND(AVG(r.rating),1) AS avg_rating, COUNT(DISTINCT r.id) AS review_count,
-             MIN(d.slots_left) AS min_slots
+             MIN(d.slots_left) AS min_slots, MIN(d.start_date) AS next_date
       FROM packages p
       LEFT JOIN reviews r ON r.package_id = p.id
       LEFT JOIN package_dates d ON d.package_id = p.id AND d.start_date >= CURDATE() AND d.slots_left > 0
@@ -63,7 +67,20 @@ router.get('/packages/:slug', async (req, res, next) => {
     `, [pkg.id]);
     const [[stats]] = await pool.query('SELECT ROUND(AVG(rating),1) AS avg_rating, COUNT(*) AS review_count FROM reviews WHERE package_id = ?', [pkg.id]);
 
-    res.render('package-detail', { pkg, itinerary, dates, reviews, stats });
+    // Can this user review? Needs a confirmed/completed booking + no existing review.
+    let canReview = false;
+    if (req.session.user) {
+      const [[booked]] = await pool.query(
+        'SELECT 1 AS ok FROM bookings WHERE user_id = ? AND package_id = ? AND status IN ("CONFIRMED","COMPLETED") LIMIT 1',
+        [req.session.user.id, pkg.id]);
+      const [[reviewed]] = await pool.query(
+        'SELECT 1 AS ok FROM reviews WHERE user_id = ? AND package_id = ? LIMIT 1',
+        [req.session.user.id, pkg.id]);
+      canReview = !!booked && !reviewed;
+    }
+
+    const [coupons] = await pool.query('SELECT code, discount_pct, max_discount FROM coupons WHERE is_active = TRUE AND (expires_at IS NULL OR expires_at >= CURDATE()) ORDER BY discount_pct DESC LIMIT 1');
+    res.render('package-detail', { pkg, itinerary, dates, reviews, stats, canReview, bestCoupon: coupons[0] || null });
   } catch (err) { next(err); }
 });
 

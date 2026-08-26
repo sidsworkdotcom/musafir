@@ -5,8 +5,13 @@ const session = require('express-session');
 
 const siteRoutes = require('./routes/site');
 const adminRoutes = require('./routes/admin');
+const authRoutes = require('./routes/auth');
+const bookingRoutes = require('./routes/booking');
+const { attachUser } = require('./middleware/auth');
 
 const app = express();
+const PROD = process.env.NODE_ENV === 'production';
+if (PROD) app.set('trust proxy', 1); // behind nginx/CloudFront so secure cookies + req.ip work
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -17,8 +22,13 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret',
   resave: false,
   saveUninitialized: false,
+  cookie: { httpOnly: true, sameSite: 'lax', secure: PROD, maxAge: 7 * 24 * 3600 * 1000 },
 }));
+app.use((req, res, next) => { res.locals.appUrl = process.env.APP_URL || `http://localhost:${process.env.PORT || 3000}`; next(); });
 
+app.use(attachUser);
+app.use('/', authRoutes);
+app.use('/', bookingRoutes);
 app.use('/', siteRoutes);
 app.use('/admin', adminRoutes);
 

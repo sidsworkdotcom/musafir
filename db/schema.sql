@@ -3,10 +3,16 @@
 
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  cognito_sub VARCHAR(64) UNIQUE,          -- filled in Phase 3 when Cognito is wired
+  cognito_sub VARCHAR(64) UNIQUE,          -- filled when auth is swapped to Cognito at deploy time
+  password_hash VARCHAR(100),              -- local auth (Phase 3); NULL once Cognito takes over
   name VARCHAR(100) NOT NULL,
   email VARCHAR(150) NOT NULL UNIQUE,
   role ENUM('USER','ADMIN') DEFAULT 'USER',
+  is_verified BOOLEAN NOT NULL DEFAULT FALSE, -- set TRUE via the ZeptoMail verification link
+  verify_token VARCHAR(64) UNIQUE,
+  verify_expires DATETIME,
+  reset_token VARCHAR(64) UNIQUE,
+  reset_expires DATETIME,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

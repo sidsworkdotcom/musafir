@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title>Sign up · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <section class="auth-wrap">
+    <%- include('_side') %>
+    <div class="auth-main">
+      <p class="mono">NEW MUSAFIR</p>
+      <h1>Create your account</h1>
+      <% if (error) { %><p class="form-error"><%= error %></p><% } %>
+      <form method="post" action="/signup">
+        <label>Name <input type="text" name="name" value="<%= form.name || '' %>" required autofocus autocomplete="name"></label>
+        <label>Email <input type="email" name="email" value="<%= form.email || '' %>" required autocomplete="email" placeholder="We'll send a confirmation link here"></label>
+        <label>Password <input type="password" name="password" minlength="8" required placeholder="8+ characters" autocomplete="new-password"></label>
+        <button type="submit">Create account →</button>
+      </form>
+      <p class="auth-switch">Already have an account? <a href="/login">Log in</a></p>
+    </div>
+  </section>
+  <%- include('../partials/footer') %>
+</body>
+</html>

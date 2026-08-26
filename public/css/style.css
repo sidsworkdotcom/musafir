@@ -36,52 +36,127 @@ a { color: inherit; }
 
 /* ---------- Header ---------- */
 .site-header {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 1rem 5vw; border-bottom: 1px solid var(--line);
-  background: var(--paper); position: sticky; top: 0; z-index: 50;
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  padding: 0.85rem 5vw; border-bottom: 1px solid var(--line);
+  background: rgba(246,246,241,0.92); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 50;
 }
 .brand {
-  font-family: var(--font-display); font-weight: 800; font-size: 1.25rem;
-  text-decoration: none; letter-spacing: 0.04em;
+  font-family: var(--font-display); font-weight: 800; font-size: 1.3rem;
+  text-decoration: none; letter-spacing: 0.04em; display: flex; align-items: center; gap: 0.35rem;
 }
 .brand-mark { color: var(--marigold); }
-.site-header nav { display: flex; gap: 1.5rem; align-items: center; }
+.brand-tag { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; color: var(--ink-soft); font-weight: 400; margin-left: 0.5rem; padding-left: 0.6rem; border-left: 1px solid var(--line); }
+.site-header nav { display: flex; gap: 1.4rem; align-items: center; }
 .site-header nav a { text-decoration: none; font-weight: 500; font-size: 0.95rem; }
 .site-header nav a:hover { color: var(--teal); }
+.nav-offer { color: var(--marigold-deep); font-weight: 600; }
+.nav-offer::before { content: '%'; font-family: var(--font-mono); font-size: 0.7rem; background: var(--marigold); color: var(--ink); border-radius: 4px; padding: 0.1rem 0.3rem; margin-right: 0.4rem; }
 .nav-admin {
   font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em;
-  border: 1px solid var(--ink); padding: 0.3rem 0.7rem; border-radius: 999px;
+  border: 1px solid var(--ink); padding: 0.4rem 0.8rem; border-radius: 999px;
 }
 .nav-admin:hover { background: var(--ink); color: var(--paper) !important; }
-
-/* ---------- Hero ---------- */
-.hero { padding: 5rem 5vw 3.5rem; max-width: 900px; margin: 0 auto; text-align: center; }
-.eyebrow { color: var(--teal); margin-bottom: 1rem; }
-.hero h1 { font-size: clamp(2.8rem, 7vw, 5rem); font-weight: 800; }
-.hero h1 em { font-style: italic; color: var(--marigold-deep); }
-.hero-sub { max-width: 540px; margin: 1.25rem auto 2.5rem; color: var(--ink-soft); font-size: 1.05rem; }
-
-/* Ticket-shaped search bar */
-.ticket-search {
-  display: flex; background: var(--card); border: 1px solid var(--line);
-  border-radius: var(--radius); overflow: hidden; max-width: 680px; margin: 0 auto;
-  box-shadow: 0 8px 24px rgba(22, 28, 54, 0.08);
+.nav-cta { background: var(--marigold); border-color: var(--marigold); }
+.nav-cta:hover { background: var(--marigold-deep); border-color: var(--marigold-deep); color: var(--ink) !important; }
+.nav-user { display: flex; align-items: center; gap: 0.6rem; padding-left: 1rem; border-left: 1px solid var(--line); }
+.avatar {
+  width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--paper);
+  display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem;
 }
+.nav-user .name { font-weight: 600; font-size: 0.9rem; }
+
+/* ---------- Flash / toast ---------- */
+.flash { max-width: 1200px; margin: 1rem auto 0; padding: 0 5vw; }
+.flash p { padding: 0.75rem 1.1rem; border-radius: 10px; font-weight: 500; font-size: 0.95rem; display: flex; justify-content: space-between; gap: 1rem; }
+.flash-ok { background: #e3f2ec; color: var(--teal); border: 1px solid #bfe0d3; }
+.flash-info { background: #fdf3dd; color: var(--marigold-deep); border: 1px solid #f3dfae; }
+.flash button { background: none; border: none; cursor: pointer; color: inherit; font-size: 1.1rem; line-height: 1; }
+.toast {
+  position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px);
+  background: var(--ink); color: var(--paper); padding: 0.75rem 1.2rem; border-radius: 999px;
+  font-weight: 500; font-size: 0.92rem; opacity: 0; pointer-events: none; transition: all 0.25s; z-index: 200;
+  box-shadow: 0 10px 30px rgba(22,28,54,0.25);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast .mono { color: var(--marigold); margin-left: 0.4rem; }
+
+/* ---------- Hero (dark ink, route map) ---------- */
+.hero {
+  background: var(--ink); color: var(--paper); position: relative; overflow: hidden;
+  padding: 4.5rem 5vw 3.5rem;
+}
+.hero-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+.hero-map { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.35; pointer-events: none; }
+.eyebrow { color: var(--marigold); margin-bottom: 1rem; }
+.hero h1 { font-size: clamp(2.6rem, 6.5vw, 4.8rem); font-weight: 800; max-width: 12ch; }
+.hero h1 em { font-style: italic; color: var(--marigold); }
+.hero-sub { max-width: 520px; margin: 1.25rem 0 2.25rem; color: #c7cbe0; font-size: 1.05rem; }
+
+/* Tabbed ticket search (MMT-style category tabs on a boarding pass) */
+.search-card { background: var(--card); color: var(--ink); border-radius: var(--radius); box-shadow: 0 18px 50px rgba(0,0,0,0.35); max-width: 900px; overflow: hidden; }
+.search-tabs { display: flex; border-bottom: 1px solid var(--line); background: #fbfbf7; overflow-x: auto; scrollbar-width: none; }
+.search-tabs::-webkit-scrollbar { display: none; }
+.search-tab {
+  flex: 0 0 auto; padding: 0.8rem 1.1rem; border: none; background: none; cursor: pointer;
+  font-family: var(--font-body); font-weight: 600; font-size: 0.9rem; color: var(--ink-soft);
+  border-bottom: 3px solid transparent; margin-bottom: -1px; display: flex; gap: 0.4rem; align-items: center;
+}
+.search-tab .ico { font-size: 1rem; }
+.search-tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--marigold); background: var(--card); }
+.ticket-search { display: flex; }
 .ticket-search-field {
-  flex: 1; padding: 0.8rem 1.2rem; text-align: left;
-  border-right: 1px dashed var(--line); display: flex; flex-direction: column; gap: 0.15rem;
+  flex: 1; padding: 0.9rem 1.2rem; text-align: left;
+  border-right: 1px dashed var(--line); display: flex; flex-direction: column; gap: 0.15rem; min-width: 0;
 }
 .ticket-search-field label { color: var(--ink-soft); }
-.ticket-search-field input {
+.ticket-search-field input, .ticket-search-field select {
   border: none; outline: none; font-family: var(--font-body);
-  font-size: 1rem; background: transparent; color: var(--ink);
+  font-size: 1rem; background: transparent; color: var(--ink); width: 100%;
 }
+.ticket-search-field input:focus-visible, .ticket-search-field select:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
 .ticket-search button {
   border: none; background: var(--marigold); color: var(--ink);
-  font-family: var(--font-display); font-weight: 600; font-size: 1rem;
-  padding: 0 1.6rem; cursor: pointer; transition: background 0.15s;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+  padding: 0 1.8rem; cursor: pointer; transition: background 0.15s; white-space: nowrap;
 }
 .ticket-search button:hover { background: var(--marigold-deep); }
+
+.hero-stats { display: flex; gap: 2.5rem; margin-top: 2.25rem; flex-wrap: wrap; }
+.hero-stat strong { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; display: block; line-height: 1; }
+.hero-stat span { color: #a9b0cc; font-size: 0.85rem; }
+
+/* ---------- Offers rail (coupon stubs) ---------- */
+.offers { padding: 2.5rem 5vw 0.5rem; max-width: 1200px; margin: 0 auto; }
+.offer-rail { display: flex; gap: 1rem; overflow-x: auto; padding: 0.25rem 0 1rem; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+.offer {
+  flex: 0 0 300px; scroll-snap-align: start; display: flex; background: var(--card);
+  border: 1px solid var(--line); border-radius: 12px; overflow: hidden; position: relative;
+}
+.offer-stub {
+  width: 78px; background: var(--ink); color: var(--marigold); display: grid; place-items: center;
+  border-right: 2px dashed var(--paper); position: relative;
+}
+.offer-stub strong { font-family: var(--font-display); font-size: 1.9rem; font-weight: 800; line-height: 1; }
+.offer-stub small { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; color: #a9b0cc; display: block; text-align: center; }
+.offer::before, .offer::after { content: ''; position: absolute; left: 70px; width: 16px; height: 16px; border-radius: 50%; background: var(--paper); border: 1px solid var(--line); z-index: 1; }
+.offer::before { top: -9px; } .offer::after { bottom: -9px; }
+.offer-body { padding: 0.9rem 1rem; flex: 1; display: flex; flex-direction: column; gap: 0.35rem; }
+.offer-body h3 { font-size: 1rem; font-weight: 600; }
+.offer-body p { font-size: 0.82rem; color: var(--ink-soft); }
+.coupon-code {
+  display: inline-flex; align-items: center; gap: 0.5rem; margin-top: auto;
+  border: 1.5px dashed var(--marigold-deep); border-radius: 8px; padding: 0.35rem 0.6rem;
+  font-family: var(--font-mono); letter-spacing: 0.14em; font-size: 0.85rem; font-weight: 500; background: #fff9ea; cursor: pointer; align-self: flex-start;
+}
+.coupon-code button { border: none; background: var(--ink); color: var(--paper); font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; padding: 0.3rem 0.5rem; border-radius: 5px; cursor: pointer; }
+.coupon-code button:hover { background: var(--teal); }
+
+/* ---------- Why Musafir strip ---------- */
+.why { max-width: 1200px; margin: 0 auto; padding: 1rem 5vw 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+.why div { display: flex; gap: 0.8rem; align-items: flex-start; padding: 1rem; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.why .ico { font-size: 1.3rem; line-height: 1; padding-top: 0.15rem; }
+.why strong { display: block; font-size: 0.95rem; }
+.why span { font-size: 0.85rem; color: var(--ink-soft); }
 
 /* Route line motif */
 .hero-route, .footer-route {
@@ -105,7 +180,7 @@ a { color: inherit; }
 
 .chip-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.25rem; }
 .chip {
-  padding: 0.5rem 1.1rem; border: 1px solid var(--ink); border-radius: 999px;
+  padding: 0.7rem 1.4rem; border: 1px solid var(--ink); border-radius: 999px;
   text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: all 0.15s;
   display: inline-block;
 }
@@ -136,6 +211,8 @@ a { color: inherit; }
 .pass-body { padding: 1.1rem 1.25rem 0.9rem; flex: 1; }
 .pass-route { color: var(--teal); margin-bottom: 0.35rem; }
 .pass-body h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.4rem; }
+.pass-next { font-size: 0.82rem; color: var(--ink-soft); margin-top: 0.35rem; }
+.pass-next b { color: var(--ink); font-weight: 600; }
 .pass-rating { font-size: 0.9rem; color: var(--marigold-deep); font-weight: 600; }
 .pass-rating span { color: var(--ink-soft); font-weight: 400; }
 .pass-rating-none { color: var(--ink-soft); font-weight: 400; font-style: italic; }
@@ -154,11 +231,13 @@ a { color: inherit; }
 .pass-stub::after { right: -9px; }
 .stub-label { color: var(--ink-soft); }
 .stub-price { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; }
+.stub-cta { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; background: var(--ink); color: var(--paper); padding: 0.4rem 0.7rem; border-radius: 6px; }
+.pass:hover .stub-cta { background: var(--marigold); color: var(--ink); }
 
 /* ---------- Listing page ---------- */
 .page-head { padding: 3rem 5vw 0.5rem; max-width: 1200px; margin: 0 auto; }
 .page-head h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 1.25rem; }
-.filter-bar { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.filter-bar { display: flex; gap: 0.6rem; flex-wrap: wrap; position: sticky; top: 64px; z-index: 40; background: var(--paper); padding: 0.75rem 0; border-bottom: 1px solid var(--line); }
 .filter-bar input, .filter-bar select {
   padding: 0.6rem 0.9rem; border: 1px solid var(--line); border-radius: 8px;
   font-family: var(--font-body); font-size: 0.92rem; background: var(--card); color: var(--ink);
@@ -230,6 +309,15 @@ a { color: inherit; }
 }
 .book-btn:disabled { opacity: 0.55; cursor: not-allowed; }
 .booking-note { text-align: center; margin-top: 0.6rem; color: var(--ink-soft); }
+.box-price { display: flex; align-items: baseline; gap: 0.4rem; margin-bottom: 1rem; }
+.box-price strong { font-family: var(--font-display); font-size: 2rem; font-weight: 800; }
+.box-price span { color: var(--ink-soft); font-size: 0.85rem; }
+.box-offer { display: flex; gap: 0.6rem; align-items: center; background: #e3f2ec; color: var(--teal); border: 1px dashed #8fc9b8; border-radius: 8px; padding: 0.6rem 0.8rem; font-size: 0.88rem; margin: 1rem 0; }
+.box-offer .mono { background: var(--card); padding: 0.2rem 0.45rem; border-radius: 4px; color: var(--ink); }
+.trust-row { display: flex; justify-content: space-between; gap: 0.5rem; margin-top: 1rem; }
+.trust-row span { font-size: 0.72rem; color: var(--ink-soft); text-align: center; flex: 1; }
+.trust-row span b { display: block; font-size: 1.1rem; }
+.mobile-cta { display: none; }
 
 /* ---------- Admin ---------- */
 .admin-head { display: flex; justify-content: space-between; align-items: flex-end; }
@@ -300,7 +388,7 @@ a { color: inherit; }
   .booking-box { position: static; }
 }
 @media (max-width: 640px) {
-  .site-header { flex-direction: column; gap: 0.75rem; }
+  .site-header { flex-direction: column; gap: 0.6rem; }
   .ticket-search { flex-direction: column; }
   .ticket-search-field { border-right: none; border-bottom: 1px dashed var(--line); }
   .ticket-search button { padding: 0.9rem; }
@@ -310,5 +398,157 @@ a { color: inherit; }
   .admin-head { flex-direction: column; align-items: flex-start; gap: 1rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .pass, .pass:hover { transition: none; transform: none; }
+  .pass, .pass:hover, .toast, .popup { transition: none; transform: none; animation: none; }
 }
+
+/* ---------- Phase 3: auth, booking, my-bookings ---------- */
+.auth-switch { margin-top: 1.25rem; text-align: center; font-size: 0.92rem; color: var(--ink-soft); }
+.auth-switch a { color: var(--teal); }
+.nav-logout { display: inline; }
+.nav-logout button {
+  background: none; border: none; cursor: pointer; font-family: var(--font-body);
+  font-size: 0.95rem; font-weight: 500; color: var(--ink); padding: 0;
+}
+.nav-logout button:hover { color: var(--teal); }
+
+.book-layout { display: grid; grid-template-columns: 1fr 360px; gap: 2rem; max-width: 1000px; margin: 2rem auto; padding: 0 5vw; align-items: start; }
+.book-card { max-width: none; }
+.book-summary { position: sticky; top: 90px; }
+.book-summary .fare-lines { margin-top: 0.5rem; }
+.coupon-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: -0.4rem 0 1rem; }
+.coupon-chip { border: 1.5px dashed var(--marigold-deep); background: #fff9ea; border-radius: 6px; padding: 0.3rem 0.6rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; cursor: pointer; }
+.coupon-chip:hover, .coupon-chip.active { background: var(--marigold); border-style: solid; }
+.coupon-chip small { font-family: var(--font-body); letter-spacing: 0; color: var(--ink-soft); margin-left: 0.3rem; }
+.fare-hint { font-size: 0.85rem; color: var(--teal); min-height: 1.2em; margin-top: -0.6rem; margin-bottom: 0.8rem; }
+.fare-hint.bad { color: var(--danger); }
+.book-sub { margin: -0.75rem 0 1.25rem; }
+.book-card select, .book-card textarea {
+  padding: 0.65rem 0.85rem; border: 1px solid var(--line); border-radius: 8px;
+  font-family: var(--font-body); font-size: 0.95rem; background: var(--paper); color: var(--ink);
+}
+.book-btn-link { display: block; text-align: center; text-decoration: none; color: var(--ink); }
+
+.fare-lines { list-style: none; margin: 1.25rem 0 1.5rem; border-top: 2px dashed var(--line); }
+.fare-lines li { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px dashed var(--line); font-size: 0.95rem; }
+.fare-discount { color: var(--teal); }
+.fare-total { font-weight: 700; font-size: 1.05rem !important; }
+
+.confirm-banner {
+  background: #e3f2ec; color: var(--teal); border: 1px solid #bfe0d3;
+  padding: 0.8rem 1.1rem; border-radius: 10px; margin-top: 0.5rem; font-weight: 500;
+}
+
+.booking-list { display: flex; flex-direction: column; gap: 1rem; }
+.booking-row {
+  display: flex; gap: 1.25rem; align-items: center; background: var(--card);
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.25rem;
+}
+.booking-img { width: 90px; height: 70px; border-radius: 8px; background-size: cover; background-position: center; flex-shrink: 0; background-color: var(--ink-soft); }
+.booking-info { flex: 1; }
+.booking-ref { color: var(--ink-soft); margin-bottom: 0.2rem; }
+.booking-info h3 { font-size: 1.1rem; font-weight: 600; }
+.booking-info h3 a { text-decoration: none; }
+.booking-info h3 a:hover { color: var(--teal); }
+.booking-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+.btn-small { padding: 0.45rem 0.9rem; font-size: 0.85rem; }
+.pill-confirmed { background: #e3f2ec; color: var(--teal); }
+.pill-pending { background: #fdf3dd; color: var(--marigold-deep); }
+.pill-completed { background: #e8eaf3; color: var(--ink-soft); }
+.pill-cancelled { background: #f0e6e3; color: var(--danger); }
+
+.review-form { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; max-width: 480px; }
+.review-form label { display: flex; flex-direction: column; gap: 0.3rem; font-weight: 500; font-size: 0.92rem; margin-bottom: 1rem; }
+.review-form select, .review-form textarea {
+  padding: 0.6rem 0.85rem; border: 1px solid var(--line); border-radius: 8px;
+  font-family: var(--font-body); font-size: 0.95rem; background: var(--paper); color: var(--ink);
+}
+
+@media (max-width: 640px) {
+  .booking-row { flex-direction: column; align-items: flex-start; }
+  .booking-actions { align-self: flex-end; }
+}
+
+/* ---------- Auth pages ---------- */
+.auth-wrap { display: grid; grid-template-columns: 1fr 1fr; max-width: 900px; margin: 3rem auto; padding: 0 5vw; gap: 0; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--card); }
+.auth-side { background: var(--ink); color: var(--paper); padding: 2.5rem; display: flex; flex-direction: column; justify-content: space-between; }
+.auth-side h2 { font-size: 1.9rem; font-weight: 800; margin: 0.5rem 0 1rem; }
+.auth-side h2 em { font-style: italic; color: var(--marigold); }
+.auth-side ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; color: #c7cbe0; font-size: 0.92rem; }
+.auth-side li::before { content: '✓'; color: var(--marigold); margin-right: 0.6rem; font-weight: 700; }
+.auth-side .mono { color: var(--marigold); }
+.auth-side .promo { margin-top: 2rem; border: 1.5px dashed var(--marigold); border-radius: 10px; padding: 0.8rem 1rem; font-size: 0.88rem; }
+.auth-side .promo b { font-family: var(--font-mono); letter-spacing: 0.14em; color: var(--marigold); }
+.auth-main { padding: 2.5rem; }
+.auth-main .mono { color: var(--teal); }
+.auth-main h1 { margin: 0.25rem 0 1.5rem; font-size: 1.8rem; }
+.auth-main label { display: flex; flex-direction: column; gap: 0.3rem; font-weight: 500; font-size: 0.92rem; margin-bottom: 1rem; }
+.auth-main input { padding: 0.7rem 0.85rem; border: 1px solid var(--line); border-radius: 8px; font-family: var(--font-body); font-size: 0.95rem; background: var(--paper); color: var(--ink); }
+.auth-main input:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; }
+.auth-main button[type="submit"] { width: 100%; padding: 0.85rem; background: var(--marigold); border: none; border-radius: 8px; font-weight: 700; font-family: var(--font-display); font-size: 1rem; cursor: pointer; }
+.auth-main button[type="submit"]:hover { background: var(--marigold-deep); }
+.auth-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin: -0.4rem 0 1.1rem; }
+.auth-row a { color: var(--teal); }
+.auth-inline { display: inline; }
+.auth-inline button { background: none; border: none; color: var(--teal); text-decoration: underline; cursor: pointer; font-family: var(--font-body); font-size: inherit; padding: 0; }
+.check-mail { text-align: center; max-width: 520px; margin: 4rem auto; padding: 0 5vw; }
+.check-mail .big { font-size: 3rem; margin-bottom: 0.5rem; }
+.check-mail h1 { font-size: 2rem; margin-bottom: 0.75rem; }
+.check-mail p { color: var(--ink-soft); }
+.check-mail .devnote { margin-top: 1.5rem; font-size: 0.82rem; background: #fdf3dd; color: var(--marigold-deep); border-radius: 8px; padding: 0.7rem 1rem; text-align: left; }
+.check-mail form { margin-top: 1.5rem; display: flex; gap: 0.5rem; justify-content: center; }
+.check-mail form input { padding: 0.6rem 0.85rem; border: 1px solid var(--line); border-radius: 8px; font-family: var(--font-body); min-width: 240px; }
+
+/* ---------- Offer popup ---------- */
+.popup-backdrop { position: fixed; inset: 0; background: rgba(22,28,54,0.55); backdrop-filter: blur(3px); z-index: 300; display: none; align-items: center; justify-content: center; padding: 1rem; }
+.popup-backdrop.open { display: flex; }
+.popup { width: 100%; max-width: 440px; background: var(--card); border-radius: 16px; overflow: hidden; position: relative; animation: pop 0.3s cubic-bezier(.2,.9,.3,1.2); }
+@keyframes pop { from { transform: translateY(20px) scale(0.96); opacity: 0; } to { transform: none; opacity: 1; } }
+.popup-top { background: var(--ink); color: var(--paper); padding: 1.6rem 1.75rem 1.4rem; position: relative; overflow: hidden; }
+.popup-top .mono { color: var(--marigold); }
+.popup-top h2 { font-size: 1.9rem; font-weight: 800; margin-top: 0.4rem; line-height: 1.05; }
+.popup-top h2 em { font-style: italic; color: var(--marigold); }
+.popup-top .stamp { position: absolute; right: -8px; top: 10px; transform: rotate(12deg); border: 2px solid var(--marigold); color: var(--marigold); font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.15em; padding: 0.3rem 0.5rem; border-radius: 4px; opacity: 0.85; }
+.popup-body { padding: 1.4rem 1.75rem 1.6rem; border-top: 2px dashed var(--line); }
+.popup-body p { color: var(--ink-soft); font-size: 0.92rem; margin-bottom: 1rem; }
+.popup-code { display: flex; align-items: center; justify-content: space-between; border: 2px dashed var(--marigold-deep); background: #fff9ea; border-radius: 10px; padding: 0.7rem 0.9rem 0.7rem 1.1rem; font-family: var(--font-mono); font-size: 1.15rem; letter-spacing: 0.18em; font-weight: 500; }
+.popup-code button { border: none; background: var(--ink); color: var(--paper); font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; }
+.popup-actions { display: flex; gap: 0.6rem; margin-top: 1rem; }
+.popup-actions a { flex: 1; text-align: center; text-decoration: none; padding: 0.75rem; border-radius: 8px; font-weight: 600; font-size: 0.92rem; }
+.popup-primary { background: var(--marigold); color: var(--ink); }
+.popup-ghost { border: 1px solid var(--line); color: var(--ink); }
+.popup-close { position: absolute; top: 10px; right: 12px; background: none; border: none; color: var(--paper); font-size: 1.4rem; cursor: pointer; z-index: 2; line-height: 1; }
+.popup-close:focus-visible, .popup-code button:focus-visible, .coupon-code button:focus-visible { outline: 2px solid var(--marigold); outline-offset: 2px; }
+
+/* ---------- Responsive additions ---------- */
+@media (max-width: 900px) {
+  .book-layout { grid-template-columns: 1fr; }
+  .book-summary { position: static; }
+  .auth-wrap { grid-template-columns: 1fr; }
+  .auth-side { padding: 1.75rem; }
+  .auth-side ul { display: none; }
+}
+@media (max-width: 640px) {
+  .brand-tag { display: none; }
+  .site-header nav { gap: 0.9rem; font-size: 0.9rem; flex-wrap: wrap; justify-content: center; }
+  .nav-user .name { display: none; }
+  .hero { padding: 3rem 5vw 2.5rem; }
+  .hero-stats { gap: 1.5rem; }
+  .filter-bar { position: static; }
+  .offer { flex-basis: 260px; }
+  .mobile-cta {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 100;
+    background: var(--card); border-top: 1px solid var(--line); padding: 0.7rem 5vw;
+    justify-content: space-between; align-items: center; gap: 1rem;
+  }
+  .mobile-cta strong { font-family: var(--font-display); font-size: 1.2rem; }
+  .mobile-cta a { background: var(--marigold); color: var(--ink); text-decoration: none; font-weight: 700; padding: 0.7rem 1.4rem; border-radius: 8px; }
+  body.has-mobile-cta { padding-bottom: 72px; }
+}
+
+/* ---------- Fixes after visual QA ---------- */
+.admin-card .coupon-chip { width: auto; padding: 0.3rem 0.6rem; font-size: 0.72rem; font-family: var(--font-mono); font-weight: 500; }
+.admin-card label > .hint { font-weight: 400; color: var(--ink-soft); font-size: 0.85rem; margin-left: 0.3rem; }
+.box-offer { flex-wrap: wrap; line-height: 1.5; }
+.popup-top .stamp { top: 44px; right: 14px; }
+.offers .section-head { flex-wrap: wrap; gap: 0.4rem; }
+@media (max-width: 640px) { .offers .section-head .mono { display: none; } }

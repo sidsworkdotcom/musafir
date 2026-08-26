@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title>Choose a new password · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <section class="auth-wrap">
+    <%- include('_side') %>
+    <div class="auth-main">
+      <p class="mono">PASSWORD RESET</p>
+      <h1>Choose a new password</h1>
+      <% if (error) { %><p class="form-error"><%= error %></p><% } %>
+      <form method="post" action="/reset/<%= token %>">
+        <label>New password <input type="password" name="password" minlength="8" required autofocus placeholder="8+ characters" autocomplete="new-password"></label>
+        <label>Confirm password <input type="password" name="confirm" minlength="8" required autocomplete="new-password"></label>
+        <button type="submit">Update password →</button>
+      </form>
+    </div>
+  </section>
+  <%- include('../partials/footer') %>
+</body>
+</html>

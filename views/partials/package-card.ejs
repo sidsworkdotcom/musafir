@@ -6,16 +6,24 @@
     <% } %>
   </div>
   <div class="pass-body">
-    <p class="mono pass-route"><%= p.state.toUpperCase() %> · <%= p.duration_days %>D/<%= p.duration_days - 1 %>N</p>
+    <p class="mono pass-route"><%= p.destination.toUpperCase() %> · <%= p.state.toUpperCase() %> · <%= p.duration_days %>D/<%= p.duration_days - 1 %>N</p>
     <h3><%= p.title %></h3>
     <% if (p.avg_rating) { %>
       <p class="pass-rating">★ <%= p.avg_rating %> <span>(<%= p.review_count %> review<%= p.review_count == 1 ? '' : 's' %>)</span></p>
     <% } else { %>
       <p class="pass-rating pass-rating-none">New listing</p>
     <% } %>
+    <% if (p.next_date) { %>
+      <p class="pass-next">Next departure <b><%= new Date(p.next_date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) %></b></p>
+    <% } else { %>
+      <p class="pass-next">No open departures right now</p>
+    <% } %>
   </div>
   <div class="pass-stub">
-    <span class="mono stub-label">FARE / PERSON</span>
-    <span class="stub-price">₹<%= Number(p.price).toLocaleString('en-IN') %></span>
+    <div>
+      <span class="mono stub-label">FARE / PERSON</span><br>
+      <span class="stub-price">₹<%= Number(p.price).toLocaleString('en-IN') %></span>
+    </div>
+    <span class="stub-cta">VIEW DATES →</span>
   </div>
 </a>

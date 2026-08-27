@@ -58,7 +58,7 @@ INSERT INTO package_dates (package_id, start_date, total_slots, slots_left) VALU
 (5,DATE_ADD(CURDATE(), INTERVAL 15 DAY),18,18),(5,DATE_ADD(CURDATE(), INTERVAL 29 DAY),18,7),
 (6,DATE_ADD(CURDATE(), INTERVAL 20 DAY),16,16),(6,DATE_ADD(CURDATE(), INTERVAL 34 DAY),16,1),(6,DATE_ADD(CURDATE(), INTERVAL 48 DAY),16,16);
 
-INSERT INTO coupons (code, discount_pct, max_discount, expires_at) VALUES
+INSERT IGNORE INTO coupons (code, discount_pct, max_discount, expires_at) VALUES
 ('WELCOME10', 10, 1500.00, DATE_ADD(CURDATE(), INTERVAL 365 DAY)),
 ('MONSOON20', 20, 2500.00, DATE_ADD(CURDATE(), INTERVAL 60 DAY)),
 ('HILLS15',   15, 2000.00, DATE_ADD(CURDATE(), INTERVAL 120 DAY)),

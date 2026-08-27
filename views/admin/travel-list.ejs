@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title>Admin · <%= cfg.label %> · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <section class="page-head admin-head">
+    <div><p class="mono">CONTROL TOWER</p><h1><%= cfg.label %></h1></div>
+    <div class="admin-actions">
+      <a class="btn-primary" href="/admin/<%= kind %>/new">+ New <%= cfg.singular.toLowerCase() %></a>
+      <form method="post" action="/admin/logout"><button class="btn-ghost" type="submit">Log out</button></form>
+    </div>
+  </section>
+  <section class="section">
+    <%- include('_tabs', { kind }) %>
+    <table class="admin-table">
+      <thead><tr><% cfg.listCols.forEach(([,h]) => { %><th><%= h %></th><% }) %><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <% rows.forEach(r => { %>
+          <tr class="<%= r.is_active ? '' : 'row-inactive' %>">
+            <% cfg.listCols.forEach(([c]) => { %>
+              <td><%= c === 'price' ? Number(r[c]).toLocaleString('en-IN') : c === 'dep_time' ? String(r[c]).slice(0,5) : c === 'stars' ? '★'.repeat(r[c]) : r[c] %></td>
+            <% }) %>
+            <td><span class="mono status-pill <%= r.is_active ? 'pill-live' : 'pill-off' %>"><%= r.is_active ? 'LIVE' : 'HIDDEN' %></span></td>
+            <td class="row-actions">
+              <a href="/admin/<%= kind %>/<%= r.id %>/edit">Edit</a>
+              <form method="post" action="/admin/<%= kind %>/<%= r.id %>/toggle"><button type="submit"><%= r.is_active ? 'Hide' : 'Show' %></button></form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+  <%- include('../partials/footer') %>
+</body>
+</html>

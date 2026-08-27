@@ -19,22 +19,32 @@
     <% if (bookings.length === 0) { %>
       <div class="empty-state">
         <p class="mono">NO TRIPS YET</p>
-        <p>Your journeys will appear here. <a href="/packages">Browse packages</a> to book your first one.</p>
+        <p>Your journeys will appear here. Book a <a href="/packages">package</a>, <a href="/flights">flight</a>, <a href="/trains">train</a> or <a href="/hotels">hotel</a> to get started.</p>
       </div>
     <% } else { %>
       <div class="booking-list">
-        <% bookings.forEach(b => { %>
+        <% bookings.forEach(b => { const d = b.details || {}; const fmt = x => new Date(x).toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+             const icon = { PACKAGE: '✦', FLIGHT: '✈', TRAIN: '🚆', HOTEL: '🏨' }[b.type];
+             const img = b.type === 'PACKAGE' ? b.package_image : b.type === 'HOTEL' ? b.hotel_image : null;
+             const link = b.type === 'PACKAGE' ? '/packages/' + b.package_slug : b.type === 'HOTEL' ? '/hotels/' + b.hotel_slug : b.type === 'FLIGHT' ? '/flights' : '/trains'; %>
           <article class="booking-row">
-            <div class="booking-img" style="background-image:url('<%= b.image_url %>')"></div>
+            <% if (img) { %><div class="booking-img" style="background-image:url('<%= img %>')"></div><% } else { %><div class="booking-img booking-icon"><%= icon %></div><% } %>
             <div class="booking-info">
-              <p class="mono booking-ref"><%= b.booking_ref %> · <span class="status-pill pill-<%= b.status.toLowerCase() %>"><%= b.status %></span></p>
-              <h3><a href="/packages/<%= b.slug %>"><%= b.title %></a></h3>
+              <p class="mono booking-ref"><%= b.type %> · <%= b.booking_ref %> · <span class="status-pill pill-<%= b.status.toLowerCase() %>"><%= b.status %></span></p>
+              <h3><a href="<%= link %>"><%= b.title %></a></h3>
               <p class="muted">
-                <%= new Date(b.start_date).toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }) %>
-                · <%= b.travelers %> traveller<%= b.travelers === 1 ? '' : 's' %>
+                <% if (b.type === 'HOTEL') { %>
+                  <%= fmt(b.travel_date) %> → <%= fmt(b.end_date) %> · <%= d.nights %> night<%= d.nights===1?'':'s' %> · <%= b.travelers %> room<%= b.travelers===1?'':'s' %>
+                <% } else if (b.type === 'PACKAGE') { %>
+                  <%= fmt(b.travel_date) %> · <%= b.travelers %> traveller<%= b.travelers === 1 ? '' : 's' %>
+                <% } else { %>
+                  <%= fmt(b.travel_date) %> · <%= d.from_city %> <%= d.dep %> → <%= d.to_city %> <%= d.arr %> · <%= b.travelers %> passenger<%= b.travelers === 1 ? '' : 's' %>
+                <% } %>
                 · ₹<%= Number(b.amount).toLocaleString('en-IN') %>
                 <% if (b.coupon_code) { %> · coupon <span class="mono"><%= b.coupon_code %></span><% } %>
               </p>
+              <% const nm = d.passengers ? d.passengers.map(p => p.name) : d.rooms ? d.rooms.flatMap(r => r.guests_list.map(g => g.name)) : []; %>
+              <% if (nm.length) { %><p class="pax-names"><%= b.type === 'HOTEL' ? 'Guests' : 'Travellers' %>: <%= nm.join(', ') %></p><% } %>
             </div>
             <div class="booking-actions">
               <% if (b.status === 'CONFIRMED' || b.status === 'PENDING') { %>
@@ -42,8 +52,8 @@
                   <button class="btn-ghost btn-small" type="submit">Cancel</button>
                 </form>
               <% } %>
-              <% if ((b.status === 'CONFIRMED' || b.status === 'COMPLETED') && !b.has_review) { %>
-                <a class="btn-ghost btn-small" href="/packages/<%= b.slug %>#reviews">Rate trip</a>
+              <% if (b.type === 'PACKAGE' && (b.status === 'CONFIRMED' || b.status === 'COMPLETED') && !b.has_review) { %>
+                <a class="btn-ghost btn-small" href="/packages/<%= b.package_slug %>#reviews">Rate trip</a>
               <% } %>
             </div>
           </article>

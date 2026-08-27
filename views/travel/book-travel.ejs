@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title>Review · <%= offer.title %> · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <div class="book-layout">
+    <div class="admin-card book-card">
+      <p class="mono"><%= offer.type %> · STEP 1 OF 2</p>
+      <h1><%= offer.title %></h1>
+      <p class="muted book-sub"><%= offer.subtitle %></p>
+      <% if (error) { %><p class="form-error"><%= error %></p><% } %>
+      <form id="book-form" method="post" action="/book-travel/checkout"
+            data-price="<%= offer.unitPrice * offer.nights %>"
+            data-coupons='<%- JSON.stringify(coupons.map(c => ({ code: c.code, pct: c.discount_pct, cap: c.max_discount == null ? null : Number(c.max_discount) }))) %>'>
+        <input type="hidden" name="type" value="<%= offer.type %>">
+        <input type="hidden" name="id" value="<%= offer.id %>">
+        <input type="hidden" name="date" value="<%= offer.date %>">
+        <% if (offer.type === 'TRAIN') { %><input type="hidden" name="cls" value="<%= offer.subKey %>"><% } %>
+        <% if (offer.type === 'HOTEL') { %><input type="hidden" name="room" value="<%= offer.subKey %>"><input type="hidden" name="checkout" value="<%= offer.endDate %>"><% } %>
+        <label><span><%= offer.unitLabel %> <span class="hint"><%= offer.left %> available</span></span>
+          <span class="qty-stepper"><button type="button" class="minus" data-step="qty" aria-label="Fewer">−</button><input id="qty" type="number" name="qty" value="<%= Math.min(qty, Math.min(offer.maxQty, offer.left)) %>" min="1" max="<%= Math.min(offer.maxQty, offer.left) %>" required><button type="button" data-step="qty" aria-label="More">+</button></span>
+        </label>
+        <div class="pax-section">
+          <span class="mono"><%= offer.type === 'HOTEL' ? 'GUEST DETAILS' : 'TRAVELLER DETAILS' %></span>
+          <div id="pax-list" data-mode="<%= offer.type === 'HOTEL' ? 'rooms' : 'pax' %>" data-max-guests="<%= offer.maxGuests || 2 %>"></div>
+          <% if (offer.type === 'HOTEL') { %><label><span>Special requests <span class="hint">(optional)</span></span><textarea name="special_request" rows="2" maxlength="300" placeholder="Early check-in, crib, airport pickup…"></textarea></label><% } %>
+        </div>
+        <details class="offers-box" <%= prefill ? 'open' : '' %>>
+          <summary><span class="mono">OFFERS</span> Have a coupon code?</summary>
+          <label><span>Coupon code</span><input type="text" name="coupon" value="<%= prefill %>" placeholder="Enter code" style="text-transform:uppercase" autocomplete="off"></label>
+          <p id="fare-hint" class="fare-hint"></p>
+          <% if (coupons.length) { %>
+            <p class="mono muted" style="margin-bottom:.5rem">AVAILABLE NOW</p>
+            <div class="coupon-chips">
+              <% coupons.forEach(c => { %><button type="button" class="coupon-chip" data-code="<%= c.code %>"><%= c.code %><small><%= c.discount_pct %>% off<%= c.max_discount ? ', max ₹' + Number(c.max_discount).toLocaleString('en-IN') : '' %></small></button><% }) %>
+            </div>
+          <% } %>
+        </details>
+        <button id="book-submit" type="submit">Continue to payment →</button>
+      </form>
+      <p class="booking-note"><a class="mono" href="<%= offer.backUrl %>">← BACK TO RESULTS</a></p>
+    </div>
+
+    <aside class="admin-card book-summary">
+      <p class="mono">FARE SUMMARY</p>
+      <ul class="fare-lines">
+        <li><span><%= offer.type === 'HOTEL' ? 'Check-in' : 'Date' %></span><span class="mono" id="f-date"><%= new Date(offer.date).toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }) %></span></li>
+        <% if (offer.nights > 1) { %><li><span>Nights</span><span class="mono"><%= offer.nights %></span></li><% } %>
+        <li><span><%= offer.unitLabel %></span><span class="mono" id="f-trav"></span></li>
+        <li><span>Subtotal</span><span class="mono" id="f-sub"></span></li>
+        <li class="fare-discount" id="f-disc-row" style="display:none"><span id="f-disc-label">Coupon</span><span class="mono" id="f-disc"></span></li>
+        <li class="fare-total"><span>To pay</span><span class="mono" id="f-total"></span></li>
+      </ul>
+      <p class="mono booking-note">FREE CANCELLATION · SEATS HELD ON PAYMENT</p>
+    </aside>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title><%= item && item.id ? 'Edit' : 'New' %> <%= cfg.singular.toLowerCase() %> · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <section class="page-head"><p class="mono">CONTROL TOWER</p><h1><%= item && item.id ? 'Edit' : 'New' %> <%= cfg.singular.toLowerCase() %></h1></section>
+  <section class="section">
+    <% if (error) { %><p class="form-error"><%= error %></p><% } %>
+    <form class="pkg-form" method="post" action="/admin/<%= kind %>/save">
+      <% if (item && item.id) { %><input type="hidden" name="id" value="<%= item.id %>"><% } %>
+      <div class="form-grid">
+        <% cfg.fields.forEach(([name, label, type, ph]) => { const v = item ? (item[name] == null ? '' : (type === 'time' ? String(item[name]).slice(0,5) : item[name])) : ''; %>
+          <% if (type === 'textarea') { %>
+            <label class="span-2"><%= label %><textarea name="<%= name %>" rows="3"><%= v %></textarea></label>
+          <% } else { %>
+            <label><%= label %><input type="<%= type %>" name="<%= name %>" value="<%= v %>" placeholder="<%= ph %>" <%= name === 'stars' ? 'min="1" max="5"' : '' %> <%= ['description','area','image_url','amenities'].includes(name) ? '' : 'required' %>></label>
+          <% } %>
+        <% }) %>
+        <% if (cfg.child) { %>
+          <label class="span-2"><%= cfg.child.label %>
+            <textarea name="childText" rows="5" placeholder="<%= cfg.child.example %>"><%= childText %></textarea>
+          </label>
+        <% } %>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" type="submit">Save <%= cfg.singular.toLowerCase() %></button>
+        <a class="btn-ghost" href="/admin/<%= kind %>">Cancel</a>
+      </div>
+    </form>
+  </section>
+  <%- include('../partials/footer') %>
+</body>
+</html>

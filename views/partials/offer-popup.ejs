@@ -2,19 +2,19 @@
   <div class="popup">
     <button class="popup-close" type="button" data-close aria-label="Close">×</button>
     <div class="popup-top">
-      <span class="stamp">FIRST TRIP</span>
-      <p class="mono">WELCOME OFFER</p>
-      <h2 id="popup-title">10% off your <em>first safar</em>.</h2>
+      <span class="stamp">CLASS OF 2026</span>
+      <p class="mono">LAUNCH OFFER</p>
+      <h2 id="popup-title">25% off. <em>No detention.</em></h2>
     </div>
     <div class="popup-body">
-      <p>Up to ₹1,500 off any package. Apply it at checkout — no minimum spend.</p>
-      <div class="popup-code"><span>WELCOME10</span><button type="button" data-copy="WELCOME10">COPY</button></div>
+      <p>Up to ₹3,000 off any package, flight, train or hotel. Apply at checkout — no minimum spend.</p>
+      <div class="popup-code"><span>NODETENTION2026</span><button type="button" data-copy="NODETENTION2026">COPY</button></div>
       <div class="popup-actions">
         <% if (typeof user !== 'undefined' && user) { %>
           <a class="popup-primary" href="/packages" data-close>Browse trips</a>
         <% } else { %>
           <a class="popup-primary" href="/signup">Sign up to claim</a>
-          <a class="popup-ghost" href="/packages" data-close>Just browse</a>
+          <a class="popup-ghost" href="#" data-close>Just browse</a>
         <% } %>
       </div>
     </div>

@@ -88,7 +88,10 @@ server.js            → Express app entry
 routes/site.js       → public pages (home, listing, detail)
 routes/admin.js      → admin login + package CRUD
 routes/auth.js       → signup / verify / login / forgot / reset
-routes/booking.js    → book → pay → confirm, my-bookings, cancel, reviews
+routes/booking.js    → generic confirm/cancel/e-ticket for all verticals + package checkout
+routes/travel.js     → flights / trains / hotels search, review, checkout
+lib/inventory.js     → per-date availability engine (lazy rows, atomic take/release, multi-night)
+db/seed-travel.sql   → 31 flights, 18 trains + classes, 18 hotels + room types
 middleware/auth.js   → session boundary (swap for Cognito here)
 mail/mailer.js       → ZeptoMail SMTP transport + email templates
 db/migrate.js        → idempotent ALTER TABLE migrations

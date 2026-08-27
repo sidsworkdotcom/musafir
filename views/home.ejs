@@ -19,50 +19,17 @@
       <text x="1090" y="32" fill="#a9b0cc" font-family="monospace" font-size="11" letter-spacing="2">MANALI</text>
     </svg>
     <div class="hero-inner">
-      <p class="eyebrow mono">BOARDING SOON · <%= stats.trips %> TRIPS ACROSS INDIA</p>
+      <p class="eyebrow mono">PACKAGES · FLIGHTS · TRAINS · HOTELS</p>
       <h1>Har safar,<br><em>sorted</em>.</h1>
-      <p class="hero-sub">Curated packages with real departure dates and live seat counts. Pick a date, pay, done — your booking reference lands in your inbox in seconds.</p>
+      <p class="hero-sub">Packages, flights, trains and hotels across India — one account, one checkout, live seat counts on everything. Pay, and your e-ticket lands in your inbox in seconds.</p>
 
-      <div class="search-card">
-        <div class="search-tabs" role="tablist">
-          <button class="search-tab" role="tab" type="button" aria-selected="true" data-cat=""><span class="ico">✦</span> All trips</button>
-          <button class="search-tab" role="tab" type="button" aria-selected="false" data-cat="BEACH"><span class="ico">🏖</span> Beach</button>
-          <button class="search-tab" role="tab" type="button" aria-selected="false" data-cat="HILLS"><span class="ico">⛰</span> Hills</button>
-          <button class="search-tab" role="tab" type="button" aria-selected="false" data-cat="HERITAGE"><span class="ico">🏰</span> Heritage</button>
-          <button class="search-tab" role="tab" type="button" aria-selected="false" data-cat="WILDLIFE"><span class="ico">🐅</span> Wildlife</button>
-          <button class="search-tab" role="tab" type="button" aria-selected="false" data-cat="SPIRITUAL"><span class="ico">🪔</span> Spiritual</button>
-        </div>
-        <form class="ticket-search" action="/packages" method="get">
-          <input type="hidden" name="category" id="search-category" value="">
-          <div class="ticket-search-field">
-            <label class="mono" for="q">WHERE TO</label>
-            <input id="q" type="text" name="q" placeholder="Goa, Manali, Jaipur…">
-          </div>
-          <div class="ticket-search-field">
-            <label class="mono" for="maxPrice">BUDGET / PERSON</label>
-            <select id="maxPrice" name="maxPrice">
-              <option value="">Any</option>
-              <option value="10000">Under ₹10,000</option>
-              <option value="13000">Under ₹13,000</option>
-              <option value="16000">Under ₹16,000</option>
-            </select>
-          </div>
-          <div class="ticket-search-field">
-            <label class="mono" for="maxDays">DURATION</label>
-            <select id="maxDays" name="maxDays">
-              <option value="">Any</option>
-              <option value="3">Up to 3 days</option>
-              <option value="4">Up to 4 days</option>
-              <option value="5">Up to 5 days</option>
-            </select>
-          </div>
-          <button type="submit">Find trips →</button>
-        </form>
-      </div>
+      <div id="search"><%- include('partials/travel-search', { active: 'PACKAGE', q: {}, flightCities, trainCities, hotelCities, compact: false }) %></div>
 
       <div class="hero-stats">
         <div class="hero-stat"><strong><%= stats.trips %></strong><span>curated trips</span></div>
-        <div class="hero-stat"><strong><%= categories.length %></strong><span>travel moods</span></div>
+        <div class="hero-stat"><strong><%= stats.flights %></strong><span>daily flights</span></div>
+        <div class="hero-stat"><strong><%= stats.trains %></strong><span>trains</span></div>
+        <div class="hero-stat"><strong><%= stats.hotels %></strong><span>hotels</span></div>
         <div class="hero-stat"><strong>★ <%= stats.rating || '—' %></strong><span>from verified travellers</span></div>
         <div class="hero-stat"><strong>0%</strong><span>cancellation fee</span></div>
       </div>
@@ -97,6 +64,7 @@
     <div><span class="ico">✉</span><div><strong>Instant confirmation</strong><span>Booking reference and fare summary emailed the moment you pay.</span></div></div>
   </section>
 
+  <%- include('partials/offer-popup') %>
   <%- include('partials/footer') %>
 </body>
 </html>

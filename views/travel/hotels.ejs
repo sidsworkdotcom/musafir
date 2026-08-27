@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title><%= q.city ? 'Hotels in ' + q.city : 'Hotels' %> · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <section class="results-head">
+    <p class="mono">HOTELS · SELF-MANAGED INVENTORY · LIVE ROOM COUNTS</p>
+    <h1><%= q.city ? 'Hotels in ' + q.city : 'Search hotels' %></h1>
+    <%- include('../partials/travel-search', { active: 'HOTEL', q, flightCities, trainCities, hotelCities, compact: true }) %>
+  </section>
+
+  <section class="section results">
+    <% if (!q.city) { %>
+      <div class="empty-state"><p class="mono">PICK A CITY</p><p>Choose a city and dates to see available rooms.</p></div>
+    <% } else if (results.length === 0) { %>
+      <div class="empty-state"><p class="mono">NO HOTELS</p><p>Nothing listed in <%= q.city %> yet.</p></div>
+    <% } else { %>
+      <div class="results-bar">
+        <span class="muted"><%= results.length %> hotel<%= results.length===1?'':'s' %> · <%= fmtDate(q.checkin) %> → <%= fmtDate(q.checkout) %> · <%= q.nights %> night<%= q.nights===1?'':'s' %> · <%= q.rooms %> room<%= q.rooms===1?'':'s' %></span>
+        <span class="sort-links mono">STARS
+          <% [0,3,4,5].forEach(s => { %><a href="?city=<%= encodeURIComponent(q.city) %>&checkin=<%= q.checkin %>&checkout=<%= q.checkout %>&rooms=<%= q.rooms %>&stars=<%= s %>" class="<%= q.stars===s?'on':'' %>"><%= s===0?'ALL':s+'+' %></a><% }) %>
+        </span>
+      </div>
+      <div class="hotel-list">
+        <% results.forEach(h => { const best = h.rooms.find(r => r.left >= q.rooms); %>
+          <article class="hotel-card">
+            <a class="hotel-img" href="/hotels/<%= h.slug %>?checkin=<%= q.checkin %>&checkout=<%= q.checkout %>&rooms=<%= q.rooms %>" style="background-image:url('<%= h.image_url %>')"></a>
+            <div class="hotel-body">
+              <p class="mono stars"><%= '★'.repeat(h.stars) %><span class="muted"> · <%= h.area || h.city %></span></p>
+              <h3><a href="/hotels/<%= h.slug %>?checkin=<%= q.checkin %>&checkout=<%= q.checkout %>&rooms=<%= q.rooms %>"><%= h.name %></a></h3>
+              <p class="muted hotel-desc"><%= h.description %></p>
+              <p class="amenities"><% h.amenity_list.slice(0,4).forEach(a => { %><span><%= a %></span><% }) %></p>
+            </div>
+            <div class="hotel-price">
+              <% if (!best) { %>
+                <span class="slots mono">SOLD OUT</span>
+              <% } else { %>
+                <span class="muted mono"><%= best.room_name.toUpperCase() %></span>
+                <strong>₹<%= Number(best.price_per_night).toLocaleString('en-IN') %></strong><span class="muted">per night</span>
+                <% if (best.left <= 3) { %><span class="slots slots-low mono">ONLY <%= best.left %> LEFT</span><% } %>
+                <a class="btn-primary btn-small" href="/book-travel?type=HOTEL&id=<%= h.id %>&room=<%= best.room_code %>&date=<%= q.checkin %>&checkout=<%= q.checkout %>&qty=<%= q.rooms %>">Book</a>
+                <a class="see-all mono" href="/hotels/<%= h.slug %>?checkin=<%= q.checkin %>&checkout=<%= q.checkout %>&rooms=<%= q.rooms %>">ALL ROOMS →</a>
+              <% } %>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+  <%- include('../partials/footer') %>
+</body>
+</html>

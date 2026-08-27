@@ -7,6 +7,8 @@ const siteRoutes = require('./routes/site');
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
 const bookingRoutes = require('./routes/booking');
+const travelRoutes = require('./routes/travel');
+const accountRoutes = require('./routes/account');
 const { attachUser } = require('./middleware/auth');
 
 const app = express();
@@ -29,6 +31,8 @@ app.use((req, res, next) => { res.locals.appUrl = process.env.APP_URL || `http:/
 app.use(attachUser);
 app.use('/', authRoutes);
 app.use('/', bookingRoutes);
+app.use('/', travelRoutes);
+app.use('/', accountRoutes);
 app.use('/', siteRoutes);
 app.use('/admin', adminRoutes);
 

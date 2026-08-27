@@ -21,6 +21,7 @@
         <form id="book-form" method="post" action="/book/<%= pkg.slug %>/checkout"
               data-price="<%= Number(pkg.price) %>"
               data-coupons='<%- JSON.stringify(coupons.map(c => ({ code: c.code, pct: c.discount_pct, cap: c.max_discount == null ? null : Number(c.max_discount) }))) %>'>
+          <div class="form-row">
           <label>Departure date
             <select name="date_id" required>
               <% dates.forEach(d => { %>
@@ -30,9 +31,14 @@
               <% }) %>
             </select>
           </label>
-          <label>Travellers
-            <input type="number" name="travelers" value="1" min="1" max="10" required>
+          <label><span>Travellers</span>
+            <span class="qty-stepper"><button type="button" class="minus" data-step="travelers" aria-label="Fewer">−</button><input id="travelers" type="number" name="travelers" value="1" min="1" max="10" required><button type="button" data-step="travelers" aria-label="More">+</button></span>
           </label>
+          </div>
+          <div class="pax-section">
+            <span class="mono">TRAVELLER DETAILS</span>
+            <div id="pax-list" data-mode="pax"></div>
+          </div>
           <details class="offers-box" <%= prefill ? 'open' : '' %>>
             <summary><span class="mono">OFFERS</span> Have a coupon code?</summary>
             <label><span>Coupon code</span>

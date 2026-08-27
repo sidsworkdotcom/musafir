@@ -10,10 +10,12 @@
   <section class="admin-login">
     <div class="admin-card book-card">
       <p class="mono">STEP 2 OF 2 · REF <%= bookingRef %></p>
-      <h1><%= pkg.title %></h1>
+      <h1><%= summary.title %></h1>
+      <% if (summary.subtitle) { %><p class="muted book-sub"><%= summary.subtitle %></p><% } %>
       <ul class="fare-lines">
-        <li><span>Departure</span><span class="mono"><%= new Date(slot.start_date).toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }) %></span></li>
-        <li><span>Travellers</span><span class="mono"><%= travelers %> × ₹<%= Number(pkg.price).toLocaleString('en-IN') %></span></li>
+        <li><span><%= summary.kind === 'HOTEL' ? 'Check-in' : 'Departure' %></span><span class="mono"><%= summary.dateLabel %></span></li>
+        <li><span><%= summary.unitLabel %></span><span class="mono"><%= travelers %> × ₹<%= summary.unitPrice.toLocaleString('en-IN') %><%= summary.nights > 1 ? ' × ' + summary.nights + ' nights' : '' %></span></li>
+        <% if (summary.names && summary.names.length) { %><li><span><%= summary.kind === 'HOTEL' ? 'Guests' : 'Names' %></span><span class="pax-names"><%= summary.names.join(', ') %></span></li><% } %>
         <li><span>Subtotal</span><span class="mono">₹<%= base.toLocaleString('en-IN') %></span></li>
         <% if (discount > 0) { %>
           <li class="fare-discount"><span>Coupon <%= couponCode %></span><span class="mono">− ₹<%= discount.toLocaleString('en-IN') %></span></li>

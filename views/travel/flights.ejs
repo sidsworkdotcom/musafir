@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title><%= q.from && q.to ? q.from + ' → ' + q.to + ' flights' : 'Flights' %> · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <section class="results-head">
+    <p class="mono">FLIGHTS · SELF-MANAGED INVENTORY · LIVE SEAT COUNTS</p>
+    <h1><%= q.from && q.to ? 'Flights ' + q.from + ' → ' + q.to : 'Search flights' %></h1>
+    <%- include('../partials/travel-search', { active: 'FLIGHT', q, flightCities, trainCities, hotelCities, compact: true }) %>
+  </section>
+
+  <section class="section results">
+    <% if (!q.from || !q.to) { %>
+      <div class="empty-state"><p class="mono">PICK A ROUTE</p><p>Choose departure and arrival cities to see the daily schedule.</p></div>
+    <% } else if (results.length === 0) { %>
+      <div class="empty-state"><p class="mono">NO FLIGHTS</p><p>Nothing operates on this route on <%= fmtDate(q.date) %>. Try another date or swap the cities.</p></div>
+    <% } else { %>
+      <div class="results-bar">
+        <span class="muted"><%= results.length %> flight<%= results.length===1?'':'s' %> on <%= fmtDate(q.date) %> · <%= q.pax %> passenger<%= q.pax===1?'':'s' %></span>
+        <span class="sort-links mono">SORT
+          <a href="?from=<%= q.from %>&to=<%= q.to %>&date=<%= q.date %>&pax=<%= q.pax %>&sort=price" class="<%= q.sort==='price'?'on':'' %>">PRICE</a>
+          <a href="?from=<%= q.from %>&to=<%= q.to %>&date=<%= q.date %>&pax=<%= q.pax %>&sort=dep" class="<%= q.sort==='dep'?'on':'' %>">DEPARTURE</a>
+          <a href="?from=<%= q.from %>&to=<%= q.to %>&date=<%= q.date %>&pax=<%= q.pax %>&sort=dur" class="<%= q.sort==='dur'?'on':'' %>">DURATION</a>
+        </span>
+      </div>
+      <div class="ticket-list">
+        <% results.forEach(f => { %>
+          <article class="ticket-row <%= f.left < q.pax ? 'sold-out' : '' %>">
+            <div class="tr-carrier">
+              <span class="airline-badge"><%= f.airline.split(' ').map(w=>w[0]).join('').slice(0,2) %></span>
+              <div><strong><%= f.airline %></strong><span class="mono muted"><%= f.flight_no %></span></div>
+            </div>
+            <div class="tr-times">
+              <div><strong><%= f.dep %></strong><span class="mono"><%= f.from_code %></span></div>
+              <div class="tr-dur"><span class="mono muted"><%= f.dur %></span><span class="route-line"></span><span class="mono muted">NON-STOP</span></div>
+              <div><strong><%= f.arr %><%- f.plus ? '<sup>+' + f.plus + '</sup>' : '' %></strong><span class="mono"><%= f.to_code %></span></div>
+            </div>
+            <div class="tr-price">
+              <% if (f.left < q.pax) { %>
+                <span class="slots mono">SOLD OUT</span>
+              <% } else { %>
+                <strong>₹<%= Number(f.price).toLocaleString('en-IN') %></strong><span class="muted">per pax</span>
+                <% if (f.left <= 9) { %><span class="slots slots-low mono">ONLY <%= f.left %> LEFT</span><% } %>
+                <a class="btn-primary btn-small" href="/book-travel?type=FLIGHT&id=<%= f.id %>&date=<%= q.date %>&qty=<%= q.pax %>">Book</a>
+              <% } %>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+  <%- include('../partials/footer') %>
+</body>
+</html>

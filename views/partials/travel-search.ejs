@@ -1,0 +1,108 @@
+<%# Params: active ('PACKAGE'|'FLIGHT'|'TRAIN'|'HOTEL'), q (current values), flightCities, trainCities, hotelCities, compact (bool) %>
+<% const A = active || 'PACKAGE'; const Q = q || {}; const todayStr = new Date().toISOString().slice(0,10); %>
+<div class="search-card <%= compact ? 'search-compact' : '' %>">
+  <div class="search-tabs" role="tablist">
+    <a class="search-tab" role="tab" aria-selected="<%= A === 'PACKAGE' %>" href="/#search" data-panel="PACKAGE"><span class="ico">✦</span> Packages</a>
+    <a class="search-tab" role="tab" aria-selected="<%= A === 'FLIGHT' %>" href="/flights" data-panel="FLIGHT"><span class="ico">✈</span> Flights</a>
+    <a class="search-tab" role="tab" aria-selected="<%= A === 'TRAIN' %>" href="/trains" data-panel="TRAIN"><span class="ico">🚆</span> Trains</a>
+    <a class="search-tab" role="tab" aria-selected="<%= A === 'HOTEL' %>" href="/hotels" data-panel="HOTEL"><span class="ico">🏨</span> Hotels</a>
+  </div>
+
+  <form class="ticket-search search-panel" data-panel="PACKAGE" action="/packages" method="get" <%= A === 'PACKAGE' ? '' : 'hidden' %>>
+    <div class="ticket-search-field">
+      <label class="mono" for="q">WHERE TO</label>
+      <input id="q" type="text" name="q" placeholder="Goa, Manali, Jaipur…">
+    </div>
+    <div class="ticket-search-field">
+      <label class="mono" for="category">MOOD</label>
+      <select id="category" name="category">
+        <option value="">Any</option>
+        <option value="BEACH">Beach</option><option value="HILLS">Hills</option><option value="HERITAGE">Heritage</option><option value="WILDLIFE">Wildlife</option><option value="SPIRITUAL">Spiritual</option>
+      </select>
+    </div>
+    <div class="ticket-search-field">
+      <label class="mono" for="maxPrice">BUDGET / PERSON</label>
+      <select id="maxPrice" name="maxPrice">
+        <option value="">Any</option><option value="10000">Under ₹10,000</option><option value="13000">Under ₹13,000</option><option value="16000">Under ₹16,000</option>
+      </select>
+    </div>
+    <button type="submit">Find trips →</button>
+  </form>
+
+  <form class="ticket-search search-panel" data-panel="FLIGHT" action="/flights" method="get" <%= A === 'FLIGHT' ? '' : 'hidden' %>>
+    <div class="ticket-search-field">
+      <label class="mono" for="f-from">FROM</label>
+      <select id="f-from" name="from" required>
+        <option value="">Select city</option>
+        <% (flightCities || []).forEach(c => { %><option value="<%= c.code %>" <%= Q.from === c.code ? 'selected' : '' %>><%= c.city %> (<%= c.code %>)</option><% }) %>
+      </select>
+    </div>
+    <button type="button" class="swap-btn" data-swap="f-from,f-to" aria-label="Swap">⇄</button>
+    <div class="ticket-search-field">
+      <label class="mono" for="f-to">TO</label>
+      <select id="f-to" name="to" required>
+        <option value="">Select city</option>
+        <% (flightCities || []).forEach(c => { %><option value="<%= c.code %>" <%= Q.to === c.code ? 'selected' : '' %>><%= c.city %> (<%= c.code %>)</option><% }) %>
+      </select>
+    </div>
+    <div class="ticket-search-field">
+      <label class="mono" for="f-date">DEPART</label>
+      <input id="f-date" type="date" name="date" min="<%= todayStr %>" value="<%= Q.date || todayStr %>" required>
+    </div>
+    <div class="ticket-search-field field-narrow">
+      <label class="mono" for="f-pax">PAX</label>
+      <select id="f-pax" name="pax"><% for (let i=1;i<=9;i++) { %><option value="<%= i %>" <%= Number(Q.pax||1)===i?'selected':'' %>><%= i %></option><% } %></select>
+    </div>
+    <button type="submit">Search flights →</button>
+  </form>
+
+  <form class="ticket-search search-panel" data-panel="TRAIN" action="/trains" method="get" <%= A === 'TRAIN' ? '' : 'hidden' %>>
+    <div class="ticket-search-field">
+      <label class="mono" for="t-from">FROM</label>
+      <select id="t-from" name="from" required>
+        <option value="">Select station</option>
+        <% (trainCities || []).forEach(c => { %><option value="<%= c.code %>" <%= Q.from === c.code ? 'selected' : '' %>><%= c.city %> (<%= c.code %>)</option><% }) %>
+      </select>
+    </div>
+    <button type="button" class="swap-btn" data-swap="t-from,t-to" aria-label="Swap">⇄</button>
+    <div class="ticket-search-field">
+      <label class="mono" for="t-to">TO</label>
+      <select id="t-to" name="to" required>
+        <option value="">Select station</option>
+        <% (trainCities || []).forEach(c => { %><option value="<%= c.code %>" <%= Q.to === c.code ? 'selected' : '' %>><%= c.city %> (<%= c.code %>)</option><% }) %>
+      </select>
+    </div>
+    <div class="ticket-search-field">
+      <label class="mono" for="t-date">DATE</label>
+      <input id="t-date" type="date" name="date" min="<%= todayStr %>" value="<%= Q.date || todayStr %>" required>
+    </div>
+    <div class="ticket-search-field field-narrow">
+      <label class="mono" for="t-pax">PAX</label>
+      <select id="t-pax" name="pax"><% for (let i=1;i<=6;i++) { %><option value="<%= i %>" <%= Number(Q.pax||1)===i?'selected':'' %>><%= i %></option><% } %></select>
+    </div>
+    <button type="submit">Search trains →</button>
+  </form>
+
+  <form class="ticket-search search-panel" data-panel="HOTEL" action="/hotels" method="get" <%= A === 'HOTEL' ? '' : 'hidden' %>>
+    <div class="ticket-search-field">
+      <label class="mono" for="h-city">CITY</label>
+      <select id="h-city" name="city" required>
+        <option value="">Select city</option>
+        <% (hotelCities || []).forEach(c => { %><option value="<%= c %>" <%= Q.city === c ? 'selected' : '' %>><%= c %></option><% }) %>
+      </select>
+    </div>
+    <div class="ticket-search-field">
+      <label class="mono" for="h-in">CHECK-IN</label>
+      <input id="h-in" type="date" name="checkin" min="<%= todayStr %>" value="<%= Q.checkin || todayStr %>" required>
+    </div>
+    <div class="ticket-search-field">
+      <label class="mono" for="h-out">CHECK-OUT</label>
+      <input id="h-out" type="date" name="checkout" min="<%= todayStr %>" value="<%= Q.checkout || '' %>" required>
+    </div>
+    <div class="ticket-search-field field-narrow">
+      <label class="mono" for="h-rooms">ROOMS</label>
+      <select id="h-rooms" name="rooms"><% for (let i=1;i<=5;i++) { %><option value="<%= i %>" <%= Number(Q.rooms||1)===i?'selected':'' %>><%= i %></option><% } %></select>
+    </div>
+    <button type="submit">Search hotels →</button>
+  </form>
+</div>

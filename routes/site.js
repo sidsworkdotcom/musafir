@@ -18,8 +18,9 @@ router.get('/', async (req, res, next) => {
       ORDER BY p.created_at DESC
       LIMIT 6
     `);
-    const [[stats]] = await pool.query('SELECT (SELECT COUNT(*) FROM packages WHERE is_active = TRUE) AS trips, (SELECT COUNT(*) FROM bookings WHERE status IN ("CONFIRMED","COMPLETED")) AS travellers, (SELECT ROUND(AVG(rating),1) FROM reviews) AS rating');
-    res.render('home', { featured, categories: CATEGORIES, stats });
+    const [[stats]] = await pool.query('SELECT (SELECT COUNT(*) FROM packages WHERE is_active = TRUE) AS trips, (SELECT COUNT(*) FROM flights WHERE is_active = TRUE) AS flights, (SELECT COUNT(*) FROM trains WHERE is_active = TRUE) AS trains, (SELECT COUNT(*) FROM hotels WHERE is_active = TRUE) AS hotels, (SELECT ROUND(AVG(rating),1) FROM reviews) AS rating');
+    const cities = await require('./travel').cityOptions();
+    res.render('home', { featured, categories: CATEGORIES, stats, ...cities });
   } catch (err) { next(err); }
 });
 

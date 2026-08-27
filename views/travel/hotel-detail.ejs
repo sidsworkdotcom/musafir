@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title><%= h.name %> · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <section class="detail-hero" style="background-image:linear-gradient(180deg, rgba(20,25,45,.25), rgba(20,25,45,.75)), url('<%= h.image_url %>')">
+    <div class="detail-hero-inner">
+      <p class="mono"><%= '★'.repeat(h.stars) %> · <%= (h.area || h.city).toUpperCase() %></p>
+      <h1><%= h.name %></h1>
+      <p class="mono"><%= h.city.toUpperCase() %></p>
+    </div>
+  </section>
+  <section class="detail-layout detail-single">
+    <div class="detail-main">
+      <div class="detail-section"><h2>The stay</h2>
+      <p class="detail-desc"><%= h.description %></p>
+      </div><div class="detail-section"><h2>Amenities</h2>
+      <p class="amenities"><% h.amenity_list.forEach(a => { %><span><%= a %></span><% }) %></p>
+      </div><div class="detail-section"><h2>Rooms · <%= fmtDate(q.checkin) %> → <%= fmtDate(q.checkout) %> · <%= q.nights %> night<%= q.nights===1?'':'s' %></h2>
+      <form class="date-picker" method="get" action="/hotels/<%= h.slug %>">
+        <label>Check-in <input type="date" name="checkin" value="<%= q.checkin %>" required></label>
+        <label>Check-out <input type="date" name="checkout" value="<%= q.checkout %>" required></label>
+        <label>Rooms <select name="rooms"><% for (let i=1;i<=5;i++) { %><option value="<%= i %>" <%= q.rooms===i?'selected':'' %>><%= i %></option><% } %></select></label>
+        <button class="btn-ghost btn-small" type="submit">Update</button>
+      </form>
+      <div class="room-list">
+        <% rooms.forEach(r => { %>
+          <article class="room-row <%= r.left < q.rooms ? 'sold-out' : '' %>">
+            <div><strong><%= r.room_name %></strong><span class="muted">up to <%= r.max_guests %> guest<%= r.max_guests===1?'':'s' %> · <%= r.left %> of <%= r.rooms_total %> available</span></div>
+            <div class="room-price">
+              <strong>₹<%= Number(r.price_per_night).toLocaleString('en-IN') %></strong><span class="muted">/ night</span>
+              <% if (r.left >= q.rooms) { %>
+                <a class="btn-primary btn-small" href="/book-travel?type=HOTEL&id=<%= h.id %>&room=<%= r.room_code %>&date=<%= q.checkin %>&checkout=<%= q.checkout %>&qty=<%= q.rooms %>">Book</a>
+              <% } else { %><span class="slots mono">SOLD OUT</span><% } %>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+      </div>
+    </div>
+  </section>
+  <%- include('../partials/footer') %>
+</body>
+</html>

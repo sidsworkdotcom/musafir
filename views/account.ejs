@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>My account · Musafir</title>
+</head>
+<body>
+  <%- include('partials/header') %>
+  <% const fmt = x => new Date(x).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }); const icon = { PACKAGE: '✦', FLIGHT: '✈', TRAIN: '🚆', HOTEL: '🏨' }; %>
+  <div class="account-layout">
+    <aside class="account-side">
+      <span class="avatar"><%= u.name.trim().charAt(0).toUpperCase() %></span>
+      <h2><%= u.name %></h2>
+      <p class="email"><%= u.email %></p>
+      <p class="mono" style="color:#aab6d3;font-size:.7rem;margin-top:.3rem">MUSAFIR SINCE <%= fmt(u.created_at).toUpperCase() %></p>
+      <div class="account-stats">
+        <div><strong><%= stats.total %></strong><span>bookings</span></div>
+        <div><strong><%= stats.upcoming || 0 %></strong><span>upcoming</span></div>
+        <div><strong>₹<%= Number(stats.spent).toLocaleString('en-IN') %></strong><span>travelled worth</span></div>
+        <div><strong><%= stats.cancelled || 0 %></strong><span>cancelled</span></div>
+      </div>
+      <nav>
+        <a href="/account" class="on">Profile & security</a>
+        <a href="/my-bookings">My bookings</a>
+        <a href="/packages">Browse packages</a>
+        <a href="/flights">Flights</a><a href="/trains">Trains</a><a href="/hotels">Hotels</a>
+      </nav>
+    </aside>
+
+    <div class="account-main">
+      <section class="admin-card">
+        <p class="mono">PROFILE</p>
+        <h2>Your details</h2>
+        <% if (profileError) { %><p class="form-error"><%= profileError %></p><% } %>
+        <form method="post" action="/account/profile">
+          <div class="form-grid">
+            <label>Full name <input type="text" name="name" value="<%= u.name %>" required maxlength="100"></label>
+            <label>Email <input type="email" value="<%= u.email %>" disabled title="Email can't be changed — it's your verified login."></label>
+          </div>
+          <button type="submit">Save changes</button>
+        </form>
+      </section>
+
+      <section class="admin-card">
+        <p class="mono">SECURITY</p>
+        <h2>Change password</h2>
+        <% if (pwError) { %><p class="form-error"><%= pwError %></p><% } %>
+        <form method="post" action="/account/password">
+          <div class="form-grid">
+            <label>Current password <input type="password" name="current" required autocomplete="current-password"></label>
+            <span></span>
+            <label>New password <input type="password" name="password" minlength="8" required autocomplete="new-password" placeholder="8+ characters"></label>
+            <label>Confirm new password <input type="password" name="confirm" minlength="8" required autocomplete="new-password"></label>
+          </div>
+          <button type="submit">Update password</button>
+        </form>
+      </section>
+
+      <section class="admin-card">
+        <p class="mono">RECENT</p>
+        <h2>Latest bookings</h2>
+        <% if (recent.length === 0) { %>
+          <p class="muted">Nothing yet. Your first booking will show here.</p>
+        <% } else { %>
+          <ul class="recent-list">
+            <% recent.forEach(b => { %>
+              <li>
+                <span><%= icon[b.type] %> <strong><%= b.title %></strong><br><span class="muted mono"><%= b.booking_ref %> · <%= fmt(b.travel_date) %></span></span>
+                <span><span class="status-pill pill-<%= b.status.toLowerCase() %> mono"><%= b.status %></span> <span class="mono">₹<%= Number(b.amount).toLocaleString('en-IN') %></span></span>
+              </li>
+            <% }) %>
+          </ul>
+          <p style="margin-top:1rem"><a class="see-all mono" href="/my-bookings">ALL BOOKINGS →</a></p>
+        <% } %>
+      </section>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

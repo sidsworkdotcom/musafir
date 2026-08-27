@@ -1,16 +1,19 @@
 <header class="site-header">
   <a href="/" class="brand">
-    <span class="brand-mark">✦</span> MUSAFIR <span class="brand-tag">HAR SAFAR, SORTED.</span>
+    <img class="brand-logo" src="/img/logo-mark.png" alt=""> MUSAFIR <span class="brand-tag">HAR SAFAR, SORTED.</span>
   </a>
-  <nav>
-    <a href="/packages">Trips</a>
-    <a href="/packages?category=BEACH">Beaches</a>
-    <a href="/packages?category=HILLS">Hills</a>
+  <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span></button>
+  <div class="nav-backdrop" data-nav-close></div>
+  <nav id="site-nav">
+    <a href="/packages">Packages</a>
+    <a href="/flights">Flights</a>
+    <a href="/trains">Trains</a>
+    <a href="/hotels">Hotels</a>
     <% if (typeof user !== 'undefined' && user) { %>
       <a href="/my-bookings">My bookings</a>
       <span class="nav-user">
-        <span class="avatar" aria-hidden="true"><%= user.name.trim().charAt(0).toUpperCase() %></span>
-        <span class="name"><%= user.name.split(' ')[0] %></span>
+        <a class="nav-account" href="/account" aria-label="My account"><span class="avatar" aria-hidden="true"><%= user.name.trim().charAt(0).toUpperCase() %></span></a>
+        <a class="nav-account name" href="/account"><%= user.name.split(' ')[0] %></a>
         <form method="post" action="/logout" class="nav-logout"><button type="submit">Log out</button></form>
       </span>
     <% } else { %>

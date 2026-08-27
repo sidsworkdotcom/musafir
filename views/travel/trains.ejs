@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title><%= q.from && q.to ? q.from + ' → ' + q.to + ' trains' : 'Trains' %> · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <section class="results-head">
+    <p class="mono">TRAINS · SELF-MANAGED INVENTORY · LIVE SEAT COUNTS</p>
+    <h1><%= q.from && q.to ? 'Trains ' + q.from + ' → ' + q.to : 'Search trains' %></h1>
+    <%- include('../partials/travel-search', { active: 'TRAIN', q, flightCities, trainCities, hotelCities, compact: true }) %>
+  </section>
+
+  <section class="section results">
+    <% if (!q.from || !q.to) { %>
+      <div class="empty-state"><p class="mono">PICK A ROUTE</p><p>Choose stations to see trains running on your date.</p></div>
+    <% } else if (results.length === 0) { %>
+      <div class="empty-state"><p class="mono">NO TRAINS</p><p>Nothing runs on this route on <%= fmtDate(q.date) %>. Try another date.</p></div>
+    <% } else { %>
+      <div class="results-bar"><span class="muted"><%= results.length %> train<%= results.length===1?'':'s' %> on <%= fmtDate(q.date) %> · <%= q.pax %> passenger<%= q.pax===1?'':'s' %></span></div>
+      <div class="ticket-list">
+        <% results.forEach(t => { %>
+          <article class="ticket-row train-row">
+            <div class="tr-head">
+              <div class="tr-carrier"><span class="airline-badge train-badge"><%= t.train_no %></span><div><strong><%= t.name %></strong><span class="mono muted">RUNS <%= t.days_of_week.replace(/\s/g,'').length===7 ? 'DAILY' : t.days_of_week.replace(/\s/g,'').split('').map(d=>['','M','T','W','T','F','S','S'][d]).join(' ') %></span></div></div>
+              <div class="tr-times">
+                <div><strong><%= t.dep %></strong><span class="mono"><%= t.from_code %></span></div>
+                <div class="tr-dur"><span class="mono muted"><%= t.dur %></span><span class="route-line"></span></div>
+                <div><strong><%= t.arr %><%- t.plus ? '<sup>+' + t.plus + '</sup>' : '' %></strong><span class="mono"><%= t.to_code %></span></div>
+              </div>
+            </div>
+            <div class="class-grid">
+              <% t.classes.forEach(c => { %>
+                <% if (c.left < q.pax) { %>
+                  <div class="class-card off"><span class="mono"><%= c.class_code %></span><strong>₹<%= Number(c.price).toLocaleString('en-IN') %></strong><span class="mono muted">WL</span></div>
+                <% } else { %>
+                  <a class="class-card" href="/book-travel?type=TRAIN&id=<%= t.id %>&cls=<%= c.class_code %>&date=<%= q.date %>&qty=<%= q.pax %>">
+                    <span class="mono"><%= c.class_code %></span><strong>₹<%= Number(c.price).toLocaleString('en-IN') %></strong>
+                    <span class="mono <%= c.left <= 10 ? 'low' : '' %>">AVL <%= c.left %></span>
+                  </a>
+                <% } %>
+              <% }) %>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+  <%- include('../partials/footer') %>
+</body>
+</html>

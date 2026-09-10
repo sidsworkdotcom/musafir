@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
   email VARCHAR(150) NOT NULL UNIQUE,
   role ENUM('USER','ADMIN') DEFAULT 'USER',
   is_verified BOOLEAN NOT NULL DEFAULT FALSE, -- set TRUE via the ZeptoMail verification link
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,   -- admin soft-deactivate; never hard-DELETE (bookings FK)
   verify_token VARCHAR(64) UNIQUE,
   verify_expires DATETIME,
   reset_token VARCHAR(64) UNIQUE,

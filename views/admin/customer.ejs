@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <link rel="stylesheet" href="/css/admin-crm.css">
+  <title>Admin · <%= cust.name %> · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <section class="page-head admin-head">
+    <div class="cust-head">
+      <span class="cust-avatar" aria-hidden="true"><%= cust.name.trim().charAt(0).toUpperCase() %></span>
+      <div>
+        <p class="mono">CUSTOMER #<%= cust.id %></p>
+        <h1><%= cust.name %></h1>
+        <p class="muted mono"><%= cust.email %> · joined <%= day(cust.created_at) %></p>
+      </div>
+    </div>
+    <div class="admin-actions">
+      <a class="btn-primary" href="/admin/customers">← All customers</a>
+      <% if (withActive && cust.role !== 'ADMIN') { %>
+        <form method="post" action="/admin/customers/<%= cust.id %>/toggle">
+          <input type="hidden" name="back" value="/admin/customers/<%= cust.id %>">
+          <button class="btn-ghost" type="submit"><%= cust.is_active ? 'Disable account' : 'Enable account' %></button>
+        </form>
+      <% } %>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="kpi-grid">
+      <div class="kpi kpi-hero">
+        <span class="mono">TOTAL SPENT</span>
+        <strong><%= inr(stats.spent) %></strong>
+        <span class="sub">confirmed and completed only</span>
+      </div>
+      <div class="kpi">
+        <span class="mono">BOOKINGS</span>
+        <strong><%= num(stats.total) %></strong>
+        <span class="sub"><%= num(stats.confirmed) %> confirmed · <%= num(stats.completed) %> completed</span>
+      </div>
+      <div class="kpi">
+        <span class="mono">CANCELLED</span>
+        <strong><%= num(stats.cancelled) %></strong>
+        <span class="sub"><%= inr(stats.lost) %> released</span>
+      </div>
+      <div class="kpi">
+        <span class="mono">PENDING</span>
+        <strong><%= num(stats.pending) %></strong>
+        <span class="sub">never paid</span>
+      </div>
+      <div class="kpi">
+        <span class="mono">FIRST BOOKING</span>
+        <strong style="font-size: 1.15rem;"><%= day(stats.first_booking) %></strong>
+        <span class="sub">last: <%= day(stats.last_booking) %></span>
+      </div>
+      <div class="kpi">
+        <span class="mono">ACCOUNT</span>
+        <strong style="font-size: 1.15rem;"><%= !cust.is_active ? 'Disabled' : cust.is_verified ? 'Verified' : 'Unverified' %></strong>
+        <span class="sub">role: <%= cust.role || 'USER' %></span>
+      </div>
+    </div>
+
+    <% if (byType.length) { %>
+      <%
+        const maxT = byType.reduce((m, r) => Math.max(m, Number(r.bookings) || 0), 0) || 1;
+      %>
+      <div class="panel" style="margin-bottom: 1.75rem;">
+        <h2>Where they spend</h2>
+        <p class="panel-note">Bookings and value broken down by vertical.</p>
+        <div class="bar-rows">
+          <% byType.forEach(t => { %>
+            <div class="bar-row">
+              <div class="bar-head">
+                <strong><%= t.type.charAt(0) + t.type.slice(1).toLowerCase() %></strong>
+                <span><%= num(t.bookings) %> · <%= inr(t.spent) %></span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width: <%= Math.round((Number(t.bookings) / maxT) * 100) %>%;"></div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
+
+    <h2 style="margin-bottom: 0.75rem;">Booking history</h2>
+    <% if (!bookings.length) { %>
+      <div class="panel"><p class="crm-empty">This customer hasn’t booked anything yet.</p></div>
+    <% } else { %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Ref</th><th>Item</th><th>Type</th><th>Travel date</th>
+            <th class="num">Pax</th><th class="num">Amount</th><th>Coupon</th><th>Status</th><th>Booked</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% bookings.forEach(b => { %>
+            <tr>
+              <td class="mono"><%= b.booking_ref %></td>
+              <td><%= b.title || b.package_title || '—' %></td>
+              <td><span class="mono"><%= b.type %></span></td>
+              <td class="muted mono"><%= day(b.travel_date) %></td>
+              <td class="num"><%= num(b.travelers) %></td>
+              <td class="num"><strong><%= inr(b.amount) %></strong></td>
+              <td class="mono muted"><%= b.coupon_code || '—' %></td>
+              <td>
+                <span class="mono status-pill <%= b.status === 'CANCELLED' ? 'pill-bad' : b.status === 'PENDING' ? 'pill-warn' : 'pill-ok' %>"><%= b.status %></span>
+              </td>
+              <td class="muted mono"><%= dayTime(b.created_at) %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </section>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

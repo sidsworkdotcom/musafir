@@ -13,6 +13,8 @@ const MIGRATIONS = [
   ['users', 'verify_expires', 'DATETIME'],
   ['users', 'reset_token',    'VARCHAR(64) UNIQUE'],
   ['users', 'reset_expires',  'DATETIME'],
+  // admin CRM: soft-deactivate instead of DELETE (bookings.user_id is a FK)
+  ['users', 'is_active',      'BOOLEAN NOT NULL DEFAULT TRUE'],
   // multi-vertical bookings (flights / trains / hotels)
   ['bookings', 'type',        "ENUM('PACKAGE','FLIGHT','TRAIN','HOTEL') NOT NULL DEFAULT 'PACKAGE'"],
   ['bookings', 'item_id',     'INT NULL'],

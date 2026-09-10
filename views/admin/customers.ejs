@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <link rel="stylesheet" href="/css/admin-crm.css">
+  <title>Admin · Customers · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <section class="page-head admin-head">
+    <div>
+      <p class="mono">CONTROL TOWER</p>
+      <h1>Customers</h1>
+    </div>
+    <div class="admin-actions">
+      <a class="btn-primary" href="/admin/analytics">Analytics</a>
+      <form method="post" action="/admin/logout"><button class="btn-ghost" type="submit">Log out</button></form>
+    </div>
+  </section>
+
+  <section class="section">
+    <%- include('_tabs', { kind: 'customers' }) %>
+
+    <form class="crm-toolbar" method="get" action="/admin/customers">
+      <input type="search" name="q" value="<%= q %>" placeholder="Search by name or email…" aria-label="Search customers">
+      <select name="sort" aria-label="Sort by">
+        <option value="spent"    <%= sortKey === 'spent'    ? 'selected' : '' %>>Highest spend</option>
+        <option value="bookings" <%= sortKey === 'bookings' ? 'selected' : '' %>>Most bookings</option>
+        <option value="newest"   <%= sortKey === 'newest'   ? 'selected' : '' %>>Newest first</option>
+        <option value="name"     <%= sortKey === 'name'     ? 'selected' : '' %>>Name A–Z</option>
+      </select>
+      <button type="submit">Search</button>
+      <a class="link-csv mono" href="/admin/customers.csv<%= q ? '?q=' + encodeURIComponent(q) : '' %>">EXPORT CSV</a>
+    </form>
+
+    <p class="muted" style="font-size: 0.85rem; margin-bottom: 0.75rem;">
+      <%= num(total) %> customer<%= total === 1 ? '' : 's' %><%= q ? ' matching “' + q + '”' : '' %>
+    </p>
+
+    <% if (!rows.length) { %>
+      <div class="panel"><p class="crm-empty">No customers match that search.</p></div>
+    <% } else { %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Joined</th>
+            <th class="num">Bookings</th>
+            <th class="num">Total spent</th>
+            <th class="num">Cancelled</th>
+            <th>Last booking</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% rows.forEach(r => { %>
+            <tr class="<%= r.is_active ? '' : 'row-inactive' %>">
+              <td>
+                <strong><%= r.name %></strong>
+                <% if (r.role === 'ADMIN') { %> <span class="mono status-pill pill-cool">ADMIN</span><% } %>
+                <br><span class="muted mono"><%= r.email %></span>
+              </td>
+              <td class="muted mono"><%= day(r.created_at) %></td>
+              <td class="num"><%= num(r.bookings) %></td>
+              <td class="num"><strong><%= inr(r.spent) %></strong></td>
+              <td class="num"><%= num(r.cancelled) %></td>
+              <td class="muted mono"><%= day(r.last_booking) %></td>
+              <td>
+                <% if (!r.is_active) { %>
+                  <span class="mono status-pill pill-bad">DISABLED</span>
+                <% } else if (r.is_verified) { %>
+                  <span class="mono status-pill pill-ok">VERIFIED</span>
+                <% } else { %>
+                  <span class="mono status-pill pill-warn">UNVERIFIED</span>
+                <% } %>
+              </td>
+              <td class="row-actions">
+                <a href="/admin/customers/<%= r.id %>">View</a>
+                <% if (withActive && r.role !== 'ADMIN') { %>
+                  <form method="post" action="/admin/customers/<%= r.id %>/toggle">
+                    <input type="hidden" name="back" value="/admin/customers">
+                    <button type="submit"><%= r.is_active ? 'Disable' : 'Enable' %></button>
+                  </form>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+
+      <% if (pages > 1) { %>
+        <nav class="pager">
+          <% for (let i = 1; i <= pages; i++) { %>
+            <% if (i === page) { %>
+              <span class="on"><%= i %></span>
+            <% } else { %>
+              <a href="/admin/customers?page=<%= i %>&sort=<%= sortKey %><%= q ? '&q=' + encodeURIComponent(q) : '' %>"><%= i %></a>
+            <% } %>
+          <% } %>
+        </nav>
+      <% } %>
+    <% } %>
+
+    <% if (!withActive) { %>
+      <p class="muted" style="margin-top: 1.25rem; font-size: 0.82rem;">
+        Deactivation is off until <span class="mono">npm run db:migrate</span> adds <span class="mono">users.is_active</span>.
+        Customers are never hard-deleted: their bookings reference them by foreign key.
+      </p>
+    <% } %>
+  </section>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

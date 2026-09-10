@@ -5,6 +5,7 @@ const session = require('express-session');
 
 const siteRoutes = require('./routes/site');
 const adminRoutes = require('./routes/admin');
+const adminCrmRoutes = require('./routes/admin-crm');
 const authRoutes = require('./routes/auth');
 const bookingRoutes = require('./routes/booking');
 const travelRoutes = require('./routes/travel');
@@ -34,6 +35,7 @@ app.use('/', bookingRoutes);
 app.use('/', travelRoutes);
 app.use('/', accountRoutes);
 app.use('/', siteRoutes);
+app.use('/admin', adminCrmRoutes);   // customers + analytics (additive, read-only)
 app.use('/admin', adminRoutes);
 
 // 404

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <link rel="stylesheet" href="/css/admin-crm.css">
+  <title>Admin · Analytics · Musafir</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <section class="page-head admin-head">
+    <div>
+      <p class="mono">CONTROL TOWER</p>
+      <h1>Analytics</h1>
+    </div>
+    <div class="admin-actions">
+      <a class="btn-primary" href="/admin/customers">Customers</a>
+      <form method="post" action="/admin/logout"><button class="btn-ghost" type="submit">Log out</button></form>
+    </div>
+  </section>
+
+  <section class="section">
+    <%- include('_tabs', { kind: 'analytics' }) %>
+
+    <%
+      const maxMonth = months.reduce((m, r) => Math.max(m, Number(r.revenue) || 0), 0) || 1;
+      const maxVert  = verticals.reduce((m, r) => Math.max(m, Number(r.bookings) || 0), 0) || 1;
+      const maxCat   = categories.reduce((m, r) => Math.max(m, Number(r.bookings) || 0), 0) || 1;
+      const maxCust  = topCustomers.reduce((m, r) => Math.max(m, Number(r.spent) || 0), 0) || 1;
+      const compact  = v => { const n = Number(v) || 0; return n >= 100000 ? (n / 100000).toFixed(1) + 'L' : n >= 1000 ? Math.round(n / 1000) + 'k' : String(n); };
+    %>
+
+    <div class="kpi-grid">
+      <div class="kpi kpi-hero">
+        <span class="mono">TOTAL REVENUE</span>
+        <strong><%= inr(k.revenue) %></strong>
+        <span class="sub"><%= num(k.paid_bookings) %> paid bookings</span>
+      </div>
+      <div class="kpi">
+        <span class="mono">TODAY</span>
+        <strong><%= inr(k.revenue_today) %></strong>
+        <span class="sub"><%= num(k.bookings_today) %> booking<%= Number(k.bookings_today) === 1 ? '' : 's' %></span>
+      </div>
+      <div class="kpi">
+        <span class="mono">THIS MONTH</span>
+        <strong><%= inr(k.revenue_month) %></strong>
+        <span class="sub"><%= num(k.bookings_month) %> bookings</span>
+      </div>
+      <div class="kpi">
+        <span class="mono">AVG ORDER VALUE</span>
+        <strong><%= inr(aov) %></strong>
+        <span class="sub">per paid booking</span>
+      </div>
+      <div class="kpi">
+        <span class="mono">CUSTOMERS</span>
+        <strong><%= num(u.total) %></strong>
+        <span class="sub"><%= num(u.verified) %> verified · <%= num(u.new_today) %> new today</span>
+      </div>
+      <div class="kpi">
+        <span class="mono">TRAVELLERS</span>
+        <strong><%= num(k.travellers) %></strong>
+        <span class="sub">seats / rooms sold</span>
+      </div>
+      <div class="kpi">
+        <span class="mono">CANCELLED</span>
+        <strong><%= num(k.cancelled) %></strong>
+        <span class="sub"><%= cancelRate.toFixed(1) %>% of all · <%= inr(k.cancelled_value) %> released</span>
+      </div>
+      <div class="kpi">
+        <span class="mono">PENDING</span>
+        <strong><%= num(k.pending) %></strong>
+        <span class="sub">started, never paid</span>
+      </div>
+    </div>
+
+    <div class="panel panel-wide" style="margin-bottom: 1.25rem;">
+      <h2>Revenue by month</h2>
+      <p class="panel-note">Confirmed and completed bookings, last 12 months.</p>
+      <% if (!months.length) { %>
+        <p class="crm-empty">No paid bookings yet.</p>
+      <% } else { %>
+        <div class="chart-cols">
+          <% months.forEach(m => { %>
+            <div class="chart-col" title="<%= m.label %> — <%= inr(m.revenue) %> across <%= m.bookings %> bookings">
+              <div class="bar" style="height: <%= Math.max(2, Math.round((Number(m.revenue) / maxMonth) * 100)) %>%;">
+                <span class="bar-value"><%= compact(m.revenue) %></span>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+        <div class="chart-labels">
+          <% months.forEach(m => { %><span><%= m.label %></span><% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="panel-grid">
+      <div class="panel">
+        <h2>Bookings by vertical</h2>
+        <p class="panel-note">Packages, flights, trains and hotels side by side.</p>
+        <% if (!verticals.length) { %>
+          <p class="crm-empty">No bookings yet.</p>
+        <% } else { %>
+          <div class="bar-rows">
+            <% verticals.forEach(v => { %>
+              <div class="bar-row">
+                <div class="bar-head">
+                  <strong><%= v.type.charAt(0) + v.type.slice(1).toLowerCase() %></strong>
+                  <span><%= num(v.bookings) %> · <%= inr(v.revenue) %></span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width: <%= Math.round((Number(v.bookings) / maxVert) * 100) %>%;"></div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="panel">
+        <h2>Top package categories</h2>
+        <p class="panel-note">Package bookings only — flights, trains and hotels carry no category.</p>
+        <% if (!categories.length) { %>
+          <p class="crm-empty">No package bookings yet.</p>
+        <% } else { %>
+          <div class="bar-rows">
+            <% categories.forEach(c => { %>
+              <div class="bar-row">
+                <div class="bar-head">
+                  <strong><%= c.category.charAt(0) + c.category.slice(1).toLowerCase() %></strong>
+                  <span><%= num(c.bookings) %> · <%= inr(c.revenue) %></span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill alt" style="width: <%= Math.round((Number(c.bookings) / maxCat) * 100) %>%;"></div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="panel">
+        <h2>Top customers by spend</h2>
+        <p class="panel-note">Lifetime value across every vertical.</p>
+        <% if (!topCustomers.length) { %>
+          <p class="crm-empty">No paying customers yet.</p>
+        <% } else { %>
+          <div class="bar-rows">
+            <% topCustomers.forEach(c => { %>
+              <div class="bar-row">
+                <div class="bar-head">
+                  <strong><a href="/admin/customers/<%= c.id %>" style="text-decoration: none; border-bottom: 1.5px solid var(--marigold);"><%= c.name %></a></strong>
+                  <span><%= inr(c.spent) %> · <%= num(c.bookings) %> bookings</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width: <%= Math.round((Number(c.spent) / maxCust) * 100) %>%;"></div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="panel">
+        <h2>Cancellations</h2>
+        <p class="panel-note">Seats released back to inventory. Money movement is Razorpay-side and is not reconciled here yet.</p>
+        <div class="kpi-grid" style="margin: 0; grid-template-columns: 1fr 1fr;">
+          <div class="kpi">
+            <span class="mono">CANCELLED</span>
+            <strong><%= num(k.cancelled) %></strong>
+            <span class="sub"><%= cancelRate.toFixed(1) %>% of all bookings</span>
+          </div>
+          <div class="kpi">
+            <span class="mono">VALUE</span>
+            <strong><%= inr(k.cancelled_value) %></strong>
+            <span class="sub">excluded from revenue</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-wide">
+      <h2>Recent transactions</h2>
+      <p class="panel-note">Latest 12 bookings across all four verticals.</p>
+      <% if (!recent.length) { %>
+        <p class="crm-empty">Nothing booked yet.</p>
+      <% } else { %>
+        <table class="admin-table" style="margin-top: 0.5rem;">
+          <thead>
+            <tr><th>Ref</th><th>Customer</th><th>Item</th><th>Type</th><th class="num">Amount</th><th>Status</th><th>When</th></tr>
+          </thead>
+          <tbody>
+            <% recent.forEach(r => { %>
+              <tr>
+                <td class="mono"><%= r.booking_ref %></td>
+                <td>
+                  <a href="/admin/customers/<%= r.user_id %>"><strong><%= r.name %></strong></a><br>
+                  <span class="muted mono"><%= r.email %></span>
+                </td>
+                <td><%= r.title || '—' %></td>
+                <td><span class="mono"><%= r.type %></span></td>
+                <td class="num"><%= inr(r.amount) %></td>
+                <td>
+                  <span class="mono status-pill <%= r.status === 'CANCELLED' ? 'pill-bad' : r.status === 'PENDING' ? 'pill-warn' : 'pill-ok' %>"><%= r.status %></span>
+                </td>
+                <td class="muted mono"><%= dayTime(r.created_at) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+
+    <p class="muted" style="margin-top: 1.5rem; font-size: 0.82rem;">
+      Revenue counts CONFIRMED and COMPLETED bookings only; PENDING carts are excluded.
+      <% if (shift) { %> Day and month boundaries shifted <%= shift %> minutes from database time.<% } else { %> Day and month boundaries follow database server time.<% } %>
+    </p>
+  </section>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>
